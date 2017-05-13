@@ -11,6 +11,7 @@ Plug 'vim-scripts/fugitive.vim'
 Plug 'bling/vim-airline'
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
+Plug 'peitalin/vim-jsx-typescript'
 Plug 'maksimr/vim-jsbeautify'
 Plug 'einars/js-beautify'
 Plug 'rking/ag.vim'
@@ -84,6 +85,7 @@ nnoremap <F10> :b <C-Z>
 " autocmd FileType css,scss noremap <buffer> <c-f> :call CSSBeautify()<cr>
 " autocmd FileType javascript vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
 autocmd BufNewFile,BufRead *.json set ft=javascript
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 
 let g:jsx_ext_required = 0
 
