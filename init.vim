@@ -1,43 +1,59 @@
 set nocompatible
 call plug#begin('~/.nvim/plugged')
 
+" Defaults defined by tpope
+
+Plug 'tpope/vim-sensible'
+
+" General Purpose
 Plug 'vim-scripts/tComment'
 Plug 'vim-scripts/Solarized'
 Plug 'vim-scripts/ctrlp.vim'
-Plug 'scrooloose/syntastic'
-Plug 'vim-scripts/Handlebars'
-Plug 'vim-scripts/surround.vim'
 Plug 'vim-scripts/fugitive.vim'
+Plug 'rking/ag.vim'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'Yggdroot/indentLine'
+Plug 'ap/vim-css-color'
+
+" User interface
+
 Plug 'bling/vim-airline'
+Plug 'spolu/dwm.vim'
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'airblade/vim-gitgutter'
+Plug 'jszakmeister/vim-togglecursor'
+
+" Syntax & completion
+
+Plug 'scrooloose/syntastic'
+Plug 'Valloric/YouCompleteMe'
+Plug 'SirVer/ultisnips'
+Plug 'editorconfig/editorconfig-vim'
+
+" Helpers
+
+Plug 'vim-scripts/SearchComplete'
+Plug 'osyo-manga/vim-over'
+Plug 'ervandew/supertab'
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+
+" Javascript & Typescript
+
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'peitalin/vim-jsx-typescript'
 Plug 'maksimr/vim-jsbeautify'
-Plug 'einars/js-beautify'
-Plug 'rking/ag.vim'
-Plug 'Chun-Yang/vim-action-ag'
 Plug 'marijnh/tern_for_vim'
-Plug 'Valloric/YouCompleteMe'
-Plug 'Lokaltog/vim-easymotion'
-Plug 'Yggdroot/indentLine'
-Plug 'vim-scripts/SearchComplete'
-Plug 'ervandew/supertab'
-Plug 'bronson/vim-trailing-whitespace'
-Plug 'ap/vim-css-color'
-Plug 'SirVer/ultisnips'
-Plug 'airblade/vim-gitgutter'
-Plug 'PeterRincker/vim-argumentative'
-Plug 'osyo-manga/vim-over'
-Plug 'scrooloose/syntastic'
-Plug 'spolu/dwm.vim'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'rizzatti/dash.vim'
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
-Plug 'derekwyatt/vim-scala'
-Plug 'jszakmeister/vim-togglecursor'
 Plug 'leafgarland/typescript-vim'
 Plug 'Quramy/tsuquyomi'
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+
+" Unused?
+
+" Plug 'Chun-Yang/vim-action-ag'
+" Plug 'einars/js-beautify'
+" Plug 'PeterRincker/vim-argumentative'
+" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+" Plug 'derekwyatt/vim-scala'
 
 call plug#end()
 
@@ -65,16 +81,14 @@ set mouse=nicr
 set scrolloff=9999
 " Do not wrap lines
 set nowrap
-" No syntax highlighting beyond 120 columns
+" No syntax highlighting beyond 512 columns
 set synmaxcol=512
 syntax enable
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " Key bindings
 let mapleader=","
-map <C-h> :bprev<CR>
-map <C-l> :bnext<CR>
-map f :CtrlPBuffer<CR>
+nmap ; :
 map <Space> :CtrlP<CR>
 map s :w<CR>
 nnoremap <F10> :b <C-Z>
@@ -103,7 +117,6 @@ let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 " Plugin configuration
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 " nmap ; <Plug>(easymotion-s)
-nmap ; :
 let g:EasyMotion_smartcase = 1
 
 " Use powerline fonts for airline
@@ -112,7 +125,7 @@ let g:airline#extensions#tabline#enabled = 0
 
 " Indent line
 let g:indentLine_color_term = 0
-" let g:indentLine_char = '︙'
+let g:indentLine_char = '︙'
 
 set wildignore+=*/target/*,*/node_modules/*,*/bower_components/*,*.so,*.swp,*.zip
 let g:ctrlp_working_path_mode = 'ra'
