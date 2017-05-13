@@ -1,14 +1,13 @@
 set nocompatible
 call plug#begin('~/.nvim/plugged')
 
-" Plug 'gmarik/vundle'
-Plug 'tComment'
-Plug 'Solarized'
-Plug 'ctrlp.vim'
+Plug 'vim-scripts/tComment'
+Plug 'vim-scripts/Solarized'
+Plug 'vim-scripts/ctrlp.vim'
 Plug 'scrooloose/syntastic'
-Plug 'Handlebars'
-Plug 'surround.vim'
-Plug 'fugitive.vim'
+Plug 'vim-scripts/Handlebars'
+Plug 'vim-scripts/surround.vim'
+Plug 'vim-scripts/fugitive.vim'
 Plug 'bling/vim-airline'
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
