@@ -26,7 +26,7 @@ Plug 'jszakmeister/vim-togglecursor'
 
 " Syntax & completion
 
-Plug 'scrooloose/syntastic'
+Plug 'neomake/neomake'
 Plug 'Valloric/YouCompleteMe'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
@@ -76,7 +76,6 @@ set relativenumber
 set wildchar=<Tab> wildmenu wildmode=full
 set wildcharm=<C-Z>
 set modelines=0
-set scrolloff=3
 set inccommand=split
 " set mouse=nicr
 set scrolloff=9999
@@ -90,6 +89,7 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Key bindings
 let mapleader=","
 nmap ; :
+map t :Ag<Space>
 map <Space> :CtrlP<CR>
 map s :w<CR>
 nnoremap <F10> :b <C-Z>
@@ -101,6 +101,10 @@ nnoremap <F10> :b <C-Z>
 " autocmd FileType javascript vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
 autocmd BufNewFile,BufRead *.json set ft=javascript
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
+autocmd BufWritePost * Neomake
+
+" let g:neomake_typescript_jsx_enabled_makers = ['tslint']
+" let g:neomake_jsx_enabled_makers = ['eslint']
 
 let g:jsx_ext_required = 0
 
@@ -129,14 +133,11 @@ let g:airline#extensions#tabline#enabled = 0
 
 " Indent line
 let g:indentLine_color_term = 0
-let g:indentLine_char = '︙'
 
 set wildignore+=*/target/*,*/node_modules/*,*/bower_components/*,*.so,*.swp,*.zip
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_root_markers = ['.project', 'yiic.php']
 
-let g:syntastic_javascript_checkers = ['eslint']
-" let g:ycm_global_ycm_extra_conf = '~/.config/nvim/ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 
 let g:tsuquyomi_completion_detail = 1
