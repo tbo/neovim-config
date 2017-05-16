@@ -13,7 +13,6 @@ Plug 'vim-scripts/ctrlp.vim'
 Plug 'vim-scripts/fugitive.vim'
 Plug 'rking/ag.vim'
 Plug 'Lokaltog/vim-easymotion'
-Plug 'Yggdroot/indentLine'
 Plug 'ap/vim-css-color'
 
 " User interface
@@ -131,9 +130,6 @@ let g:EasyMotion_smartcase = 1
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 0
 
-" Indent line
-let g:indentLine_color_term = 0
-
 set wildignore+=*/target/*,*/node_modules/*,*/bower_components/*,*.so,*.swp,*.zip
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_root_markers = ['.project', 'yiic.php']
@@ -142,7 +138,6 @@ let g:ycm_confirm_extra_conf = 0
 
 let g:tsuquyomi_completion_detail = 1
 let g:tsuquyomi_disable_quickfix = 1
-let g:syntastic_typescript_checkers = ['tsuquyomi']
 set pastetoggle=<F2>
 
 " Puts new split windows to the bottom of the current.
