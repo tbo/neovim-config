@@ -6,6 +6,7 @@ call plug#begin('~/.nvim/plugged')
 Plug 'tpope/vim-sensible'
 
 " General Purpose
+
 Plug 'vim-scripts/tComment'
 Plug 'vim-scripts/Solarized'
 Plug 'vim-scripts/ctrlp.vim'
@@ -32,7 +33,6 @@ Plug 'editorconfig/editorconfig-vim'
 
 " Helpers
 
-Plug 'vim-scripts/SearchComplete'
 Plug 'osyo-manga/vim-over'
 Plug 'ervandew/supertab'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
@@ -77,7 +77,8 @@ set wildchar=<Tab> wildmenu wildmode=full
 set wildcharm=<C-Z>
 set modelines=0
 set scrolloff=3
-set mouse=nicr
+set inccommand=split
+" set mouse=nicr
 set scrolloff=9999
 " Do not wrap lines
 set nowrap
@@ -103,6 +104,9 @@ autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 
 let g:jsx_ext_required = 0
 
+" TODO: Choose proper gitgutter symbols
+" let g:gitgutter_sign_added = '✎'
+set fillchars+=vert:│
 " make YCM compatible with UltiSnips (using supertab)
 let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
@@ -138,6 +142,13 @@ let g:ycm_confirm_extra_conf = 0
 let g:tsuquyomi_completion_detail = 1
 let g:tsuquyomi_disable_quickfix = 1
 let g:syntastic_typescript_checkers = ['tsuquyomi']
+set pastetoggle=<F2>
+
+" Puts new split windows to the bottom of the current.
+set splitbelow
+
+" Puts vertical windows to right, instead of left.
+set splitright
 
 " Close youcompleteme preview
 autocmd CompleteDone * pclose
