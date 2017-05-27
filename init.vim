@@ -7,7 +7,7 @@ Plug 'tpope/vim-sensible'
 
 " General Purpose
 
-Plug 'vim-scripts/tComment'
+Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/Solarized'
 Plug 'vim-scripts/ctrlp.vim'
 Plug 'vim-scripts/fugitive.vim'
@@ -26,15 +26,15 @@ Plug 'jszakmeister/vim-togglecursor'
 " Syntax & completion
 
 Plug 'neomake/neomake'
-Plug 'Valloric/YouCompleteMe'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 
 " Helpers
 
 Plug 'osyo-manga/vim-over'
-Plug 'ervandew/supertab'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'PeterRincker/vim-argumentative'
 
 " Javascript & Typescript
 
@@ -48,9 +48,10 @@ Plug 'Quramy/tsuquyomi'
 
 " Unused?
 
+" Plug 'ervandew/supertab'
+" Plug 'Valloric/YouCompleteMe'
 " Plug 'Chun-Yang/vim-action-ag'
 " Plug 'einars/js-beautify'
-" Plug 'PeterRincker/vim-argumentative'
 " Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 " Plug 'derekwyatt/vim-scala'
 
@@ -89,6 +90,7 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 let mapleader=","
 nmap ; :
 map t :Ag<Space>
+map f :CtrlPBuffer<CR>
 map <Space> :CtrlP<CR>
 map s :w<CR>
 nnoremap <F10> :b <C-Z>
@@ -102,6 +104,7 @@ autocmd BufNewFile,BufRead *.json set ft=javascript
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd BufWritePost * Neomake
 
+let g:deoplete#enable_at_startup = 1
 " let g:neomake_typescript_jsx_enabled_makers = ['tslint']
 " let g:neomake_jsx_enabled_makers = ['eslint']
 
@@ -111,11 +114,11 @@ let g:jsx_ext_required = 0
 " let g:gitgutter_sign_added = '✎'
 set fillchars+=vert:│
 " make YCM compatible with UltiSnips (using supertab)
-let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-let g:SuperTabDefaultCompletionType = '<C-n>'
-let g:SuperTabContextDefaultCompletionType = '<C-n>'
-
+" let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+" let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+" let g:SuperTabDefaultCompletionType = '<C-n>'
+" let g:SuperTabContextDefaultCompletionType = '<C-n>'
+"
 " better key bindings for UltiSnipsExpandTrigger
 let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
@@ -156,3 +159,9 @@ autocmd CompleteDone * pclose
 let g:solarized_termcolors=16 " use solarized 256 fallback
 set background=dark
 colorscheme solarized
+" " light blues
+" hi xmlTagName guifg=#59ACE5
+" hi xmlTag guifg=#59ACE5
+"
+" " dark blues
+" hi xmlEndTag guifg=#2974a1
