@@ -10,8 +10,12 @@ Plug 'tpope/vim-sensible'
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/Solarized'
 Plug 'vim-scripts/ctrlp.vim'
+Plug 'lokikl/vim-ctrlp-ag'
+" Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Plug 'pbogut/fzf-mru.vim'
 Plug 'vim-scripts/fugitive.vim'
-Plug 'rking/ag.vim'
+" Plug 'rking/ag.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'ap/vim-css-color'
 
@@ -29,21 +33,23 @@ Plug 'neomake/neomake'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'sheerun/vim-polyglot'
 
 " Helpers
 
+Plug 'machakann/vim-swap'
 Plug 'osyo-manga/vim-over'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'PeterRincker/vim-argumentative'
 
 " Javascript & Typescript
 
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-Plug 'peitalin/vim-jsx-typescript'
+" Plug 'pangloss/vim-javascript'
+" Plug 'mxw/vim-jsx'
+" Plug 'peitalin/vim-jsx-typescript'
 Plug 'maksimr/vim-jsbeautify'
-Plug 'marijnh/tern_for_vim'
-Plug 'leafgarland/typescript-vim'
+" Plug 'marijnh/tern_for_vim'
+" Plug 'leafgarland/typescript-vim'
 Plug 'Quramy/tsuquyomi'
 
 " Unused?
@@ -89,7 +95,7 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Key bindings
 let mapleader=","
 nmap ; :
-map t :Ag<Space>
+nmap t :CtrlPag<CR>
 map f :CtrlPBuffer<CR>
 map <Space> :CtrlP<CR>
 map s :w<CR>
@@ -124,6 +130,7 @@ let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
+let g:ctrlp_max_height = 20
 " Plugin configuration
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 " nmap ; <Plug>(easymotion-s)
@@ -159,9 +166,15 @@ autocmd CompleteDone * pclose
 let g:solarized_termcolors=16 " use solarized 256 fallback
 set background=dark
 colorscheme solarized
-" " light blues
-" hi xmlTagName guifg=#59ACE5
-" hi xmlTag guifg=#59ACE5
-"
-" " dark blues
-" hi xmlEndTag guifg=#2974a1
+nnoremap c :ls<cr>:b
+"" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
