@@ -9,13 +9,8 @@ Plug 'tpope/vim-sensible'
 
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/Solarized'
-Plug 'vim-scripts/ctrlp.vim'
-Plug 'lokikl/vim-ctrlp-ag'
-" Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-" Plug 'pbogut/fzf-mru.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 Plug 'vim-scripts/fugitive.vim'
-" Plug 'rking/ag.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'ap/vim-css-color'
 
@@ -23,9 +18,11 @@ Plug 'ap/vim-css-color'
 
 Plug 'bling/vim-airline'
 Plug 'spolu/dwm.vim'
-Plug 'bronson/vim-trailing-whitespace'
 Plug 'airblade/vim-gitgutter'
 Plug 'jszakmeister/vim-togglecursor'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'mhinz/vim-startify'
 
 " Syntax & completion
 
@@ -34,32 +31,14 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
+Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
 
 " Helpers
 
 Plug 'machakann/vim-swap'
-Plug 'osyo-manga/vim-over'
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'PeterRincker/vim-argumentative'
-
-" Javascript & Typescript
-
-" Plug 'pangloss/vim-javascript'
-" Plug 'mxw/vim-jsx'
-" Plug 'peitalin/vim-jsx-typescript'
 Plug 'maksimr/vim-jsbeautify'
-" Plug 'marijnh/tern_for_vim'
-" Plug 'leafgarland/typescript-vim'
-Plug 'Quramy/tsuquyomi'
-
-" Unused?
-
-" Plug 'ervandew/supertab'
-" Plug 'Valloric/YouCompleteMe'
-" Plug 'Chun-Yang/vim-action-ag'
-" Plug 'einars/js-beautify'
-" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
-" Plug 'derekwyatt/vim-scala'
+Plug 'simnalamburt/vim-mundo'
 
 call plug#end()
 
@@ -85,46 +64,62 @@ set modelines=0
 set inccommand=split
 " set mouse=nicr
 set scrolloff=9999
+set autochdir
 " Do not wrap lines
 set nowrap
-" No syntax highlighting beyond 512 columns
-set synmaxcol=512
+" No syntax highlighting beyond 256 columns
+set synmaxcol=256
+" Highlight trailing whitespace
+set list
+" set listchars=tab:\|\ ,
+hi SpecialKey ctermfg=66
+
 syntax enable
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+\ }
+
+" Automatically start language servers.
+let g:LanguageClient_autoStart = 1
 
 " Key bindings
 let mapleader=","
 nmap ; :
-nmap t :CtrlPag<CR>
-map f :CtrlPBuffer<CR>
-map <Space> :CtrlP<CR>
+nmap t :Ag<CR>
+map f :Buffers<CR>
+" map <Space> :CtrlP<CR>
+map <Space> :GFiles<CR>
+" nmap t :CtrlPag<CR>
+" map f :CtrlPBuffer<CR>
+" let g:ctrlp_bufname_mod = ':~:.'
 map s :w<CR>
 nnoremap <F10> :b <C-Z>
-" inoremap jj <ESC>
+nmap gh :call LanguageClient_textDocument_hover()<CR>
+nmap gd :call LanguageClient_textDocument_definition()<CR>
+nmap gn :call LanguageClient_textDocument_rename()<CR>
+nmap gr :call LanguageClient_textDocument_references()<CR>
 " autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
 " autocmd FileType json noremap <buffer>  <c-f> :call JsBeautify()<cr>
 " autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
 " autocmd FileType css,scss noremap <buffer> <c-f> :call CSSBeautify()<cr>
 " autocmd FileType javascript vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
-autocmd BufNewFile,BufRead *.json set ft=javascript
+" autocmd BufNewFile,BufRead *.json set ft=javascript
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd BufWritePost * Neomake
 
+let b:deoplete_ignore_sources = ['buffer', 'neco-syntax']
 let g:deoplete#enable_at_startup = 1
-" let g:neomake_typescript_jsx_enabled_makers = ['tslint']
-" let g:neomake_jsx_enabled_makers = ['eslint']
 
 let g:jsx_ext_required = 0
 
 " TODO: Choose proper gitgutter symbols
 " let g:gitgutter_sign_added = '✎'
 set fillchars+=vert:│
-" make YCM compatible with UltiSnips (using supertab)
-" let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-" let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-" let g:SuperTabDefaultCompletionType = '<C-n>'
-" let g:SuperTabContextDefaultCompletionType = '<C-n>'
-"
+
 " better key bindings for UltiSnipsExpandTrigger
 let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
@@ -157,7 +152,7 @@ set splitbelow
 set splitright
 
 " Close youcompleteme preview
-autocmd CompleteDone * pclose
+" autocmd CompleteDone * pclose
 
 " solarized options
 " set t_Co=256                      " force vim to use 256 colors
@@ -166,8 +161,7 @@ autocmd CompleteDone * pclose
 let g:solarized_termcolors=16 " use solarized 256 fallback
 set background=dark
 colorscheme solarized
-nnoremap c :ls<cr>:b
-"" The Silver Searcher
+" The Silver Searcher
 if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
@@ -178,3 +172,10 @@ if executable('ag')
   " " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
 endif
+highlight Comment cterm=italic
+set completeopt-=preview
+" command! -bang -nargs=* GitAg
+"   \ call fzf#vim#ag_raw(<q-args>, {'dir': systemlist('git rev-parse --show-toplevel')[0]}, <bang>0)
+" command! -bang -nargs=+ -complete=dir AgRaw call fzf#vim#ag_raw(<q-args>,
+" \                     fzf#vim#with_preview('right:50%:hidden', '?'),
+" \                     <bang>0)
