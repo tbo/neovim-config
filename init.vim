@@ -1,4 +1,7 @@
-set nocompatible
+let g:dwm_map_keys = 0
+let g:mruBuffers = get(g:, 'mruBuffers', [])
+
+autocmd!
 call plug#begin('~/.nvim/plugged')
 
 " Defaults defined by tpope
@@ -17,7 +20,6 @@ Plug 'ap/vim-css-color'
 Plug 'bling/vim-airline'
 Plug 'spolu/dwm.vim'
 Plug 'airblade/vim-gitgutter'
-" Plug 'jszakmeister/vim-togglecursor'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
@@ -41,11 +43,10 @@ Plug 'ludovicchabant/vim-gutentags'
 
 " Color Themes
 Plug 'mhartington/oceanic-next'
-Plug 'liuchengxu/space-vim-dark'
 Plug 'whatyouhide/vim-gotham'
-Plug 'lsdr/monokai'
 Plug 'chriskempson/base16-vim'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
@@ -71,10 +72,9 @@ set modelines=0
 set inccommand=split
 " set mouse=nicr
 set scrolloff=9999
-set autochdir
+" set autochdir
 set lazyredraw
 set noshowcmd
-autocmd BufWinEnter &buftype!='terminal' lcd %:p:h
 " Do not wrap lines
 set nowrap
 " No syntax highlighting beyond 256 columns
@@ -82,11 +82,8 @@ set synmaxcol=256
 syntax sync minlines=256
 " Highlight trailing whitespace
 set list
-" set listchars=tab:\|\ ,
-" hi SpecialKey ctermfg=66
 
 syntax enable
-" autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 let g:LanguageClient_serverCommands = {
     \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
@@ -101,20 +98,45 @@ let g:LanguageClient_autoStart = 1
 let mapleader=","
 nmap ; :
 nmap t :Tags<CR>
-map f :Buffers<CR>
+map f :MyBuffers<CR>
 
 " Use ESC to switch to normal mode in terminals except in fzf
 autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
 autocmd TermOpen term://* tnoremap <buffer> <ESC> <C-\><C-n>
 
-nmap <D-j> <C-W>w
-nmap <D-k> <C-W>W
-tmap <D-j> <C-\><C-n><C-W>w
-tmap <D-k> <C-\><C-n><C-W>W
-nmap <D-Enter> :call DWM_Focus()<CR>
-tmap <D-Enter> <C-\><C-n>:call DWM_Focus()<CR>
-nmap <C-Enter> :call DWM_Focus()<CR>
-tmap <C-Enter> <C-\><C-n>:call DWM_Focus()<CR>
+nmap <silent> <D-j> <C-W>w
+nmap <silent> <F2> <C-W>w
+tmap <silent> <D-j> <C-\><C-n><C-W>w
+tmap <silent> <F2> <C-\><C-n><C-W>w
+
+nmap <silent> <D-k> <C-W>W
+nmap <silent> <F3> <C-W>W
+tmap <silent> <D-k> <C-\><C-n><C-W>W
+tmap <silent> <F3> <C-\><C-n><C-W>W
+
+nmap <silent> <D-Enter> :call DWM_AutoEnter()<CR>
+nmap <silent> <F4> :call DWM_AutoEnter()<CR>
+tmap <silent> <D-Enter> <C-\><C-n>:call DWM_Focus()<CR>
+tmap <silent> <F4> <C-\><C-n>:call DWM_Focus()<CR>
+
+nmap <silent> <F5> :call DWM_ShrinkMaster()<CR>
+tmap <silent> <F5> <C-\><C-n>:call DWM_ShrinkMaster()<CR>
+
+nmap <silent> <F6> :call DWM_GrowMaster()<CR>
+tmap <silent> <F6> <C-\><C-n>:call DWM_GrowMaster()<CR>
+
+nmap <silent> <F7> :exec DWM_Close()<CR>
+tmap <silent> <F7> <C-\><C-n>:exec DWM_Close()<CR>
+
+nmap <silent> <F10> :call DeleteWindow()<CR>
+tmap <silent> <F10> <C-\><C-n>:call DeleteWindow()<CR>
+
+nmap <silent> <F8> :call DWM_New()<CR>:terminal<CR>
+tmap <silent> <F8> <C-\><C-n>:call DWM_New()<CR>:terminal<CR>
+
+nmap <silent> <F9> :call DWM_New()<CR>
+tmap <silent> <F9> <C-\><C-n>:call DWM_New()<CR>
+
 map <Space> :GFiles<CR>
 map s :w<CR>
 nmap gh :call LanguageClient_textDocument_hover()<CR>
@@ -125,8 +147,8 @@ nmap <silent> <Esc> :noh<CR>
 
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd BufWritePost * Neomake
-let g:neomake_error_sign = ''
-let g:neomake_warning_sign = ''
+" let g:neomake_error_sign = ''
+" let g:neomake_warning_sign = ''
 
 let b:deoplete_ignore_sources = ['buffer', 'neco-syntax']
 let g:deoplete#enable_at_startup = 1
@@ -136,6 +158,9 @@ let g:deoplete#enable_at_startup = 1
 " TODO: Choose proper gitgutter symbols
 " let g:gitgutter_sign_added = '✎'
 set fillchars+=vert:│
+" set fillchars+=vert:
+
+let g:terminal_scrollback_buffer_size = 10000
 
 " better key bindings for UltiSnipsExpandTrigger
 let g:UltiSnipsExpandTrigger = "<tab>"
@@ -180,15 +205,27 @@ if (has("termguicolors") || has("vimr"))
 endif
 
 highlight Comment cterm=italic
-autocmd ColorScheme * hi VertSplit guibg=bg
-" colorscheme OceanicNext
+autocmd ColorScheme * hi VertSplit guibg=bg ctermbg=None
 colorscheme gotham
 let g:airline_theme='oceanicnext'
-" Or if you have Neovim >= 0.1.5
 let g:enable_bold_font = 1
 set completeopt-=preview
 
+function! DeleteWindow()
+    let currentBufferNr = bufnr('%')
+    if len(g:mruBuffers) > 1
+        exec 'buffer '. g:mruBuffers[1]
+    else 
+        exec 'Startify'
+    endif
+    " exec DWM_Close()
+    exec 'bd! ' . currentBufferNr
+endfunction
+
 function! s:getCommonPath(paths)
+    if len(a:paths) < 2 
+        return ''
+    endif
     let common = split(a:paths[0], '/')
     for path in a:paths
         let index = 0
@@ -206,24 +243,69 @@ function! s:getCommonPath(paths)
 endfunction
 
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.rb''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
-let g:mruBuffers = []
 
 function! AddBuffer()
     let currentBuffer = expand('%:p')
-    let g:mruBuffers = [currentBuffer] + filter(g:mruBuffers, 'currentBuffer!=v:val&&bufexists(v:val)&&buflisted(v:val)')
+    let g:mruBuffers = filter(g:mruBuffers, 'currentBuffer!=v:val&&bufexists(v:val)&&buflisted(v:val)')
+    if strlen(currentBuffer) > 0 && bufexists(currentBuffer) 
+        let g:mruBuffers = [currentBuffer] + g:mruBuffers
+    endif
 endfunction
 
 function! s:bufopen(e)
-  execute 'buffer' a:e
+  execute 'buffer' split(a:e, '\t')[0]
 endfunction
 
 function! OpenBufferSelection()
-    let common = s:getCommonPath(g:mruBuffers)
-    let commonLength = strlen(common) + 2
-    let buffers = map(add(g:mruBuffers[1:], g:mruBuffers[0]), 'strpart(v:val, commonLength)')
+    if len(g:mruBuffers) == 0
+        echo 'No open buffers'
+        return
+    endif
+    let files = map(filter(deepcopy(g:mruBuffers), 'len(v:val) > 6 && v:val[:6] != "term://"'), 'buffer_number(v:val)."\t".WebDevIconsGetFileTypeSymbol(v:val)." ".v:val')
+
+    if len(files) > 1
+        let files = files[1:] + [files[0]]
+    endif
+
+    let terminals = map(filter(deepcopy(g:mruBuffers), 'len(v:val) > 6 && v:val[:6] == "term://"'), 'buffer_number(v:val)."\t  ".getbufvar(v:val, "term_title")')
+    let common = s:getCommonPath(files)
+    let commonLength = strlen(common) > 0 ? strlen(common) + 2 : 0
+    let buffers = map(files, 'strpart(v:val, commonLength)') + terminals
     call fzf#run({'source': buffers, 'sink': function('s:bufopen'), 'down': len(buffers)+3})
 endfunction
 
-autocmd BufAdd * :call AddBuffer()
-autocmd BufEnter * :call AddBuffer()
-command! -bang -nargs=* Buffers call OpenBufferSelection()
+autocmd BufAdd,BufEnter,BufDelete  * :call AddBuffer()
+command! -bang -nargs=* MyBuffers call OpenBufferSelection()
+
+highlight Normal guibg=None ctermbg=None
+autocmd TermOpen * setlocal nonumber norelativenumber
+autocmd TermOpen,BufEnter,BufLeave setlocal statusline=%{b:term_title}
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_section_c = '%{FilenameOrTerm()}'
+
+function! FilenameOrTerm()
+  return exists('b:term_title') ? b:term_title : expand('%:t')
+endfunction
+autocmd BufWinEnter,BufEnter,BufWinEnter * if &l:buftype != 'terminal' | lcd %:p:h | endif
+
+function! neomake#makers#ft#typescript#tsc() abort
+    " tsc should not be passed a single file.
+    return {
+        \ 'args': ['--project', neomake#utils#FindGlobFile('tsconfig.json'), '--noEmit', '--watch', 'false'],
+        \ 'append_file': 0,
+        \ 'errorformat':
+            \ '%E%f(%l\,%c): error %m,' .
+            \ '%E%f %#(%l\,%c): error %m,' .
+            \ '%E%f %#(%l\,%c): %m,' .
+            \ '%Eerror %m,' .
+            \ '%C%\s%\+%m'
+        \ }
+endfunction
+
+function! neomake#makers#ft#typescript#tslint() abort
+    return {
+         \ 'args': ['%:p'],
+         \ 'errorformat': '%EERROR: %f[%l\, %c]: %m,%E%f[%l\, %c]: %m'
+         \ }
+endfunction
