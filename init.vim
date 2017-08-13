@@ -2,6 +2,7 @@ let g:dwm_map_keys = 0
 let g:mruBuffers = get(g:, 'mruBuffers', [])
 
 autocmd!
+
 call plug#begin('~/.nvim/plugged')
 
 " Defaults defined by tpope
@@ -13,7 +14,6 @@ Plug 'tpope/vim-sensible'
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
 Plug 'Lokaltog/vim-easymotion'
-Plug 'ap/vim-css-color'
 
 " User interface
 
@@ -32,11 +32,10 @@ Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
 
 " Helpers
 
-Plug 'machakann/vim-swap'
-Plug 'PeterRincker/vim-argumentative'
 Plug 'simnalamburt/vim-mundo'
 " Tag auto generation
 Plug 'ludovicchabant/vim-gutentags'
@@ -44,37 +43,38 @@ Plug 'ludovicchabant/vim-gutentags'
 " Color Themes
 Plug 'mhartington/oceanic-next'
 Plug 'whatyouhide/vim-gotham'
-Plug 'chriskempson/base16-vim'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
 " Options
-set nu
-set tabstop=4
+
+" Indent defaults
 set shiftwidth=4
+set tabstop=4
 set softtabstop=4
-set smarttab
 set expandtab
+" Highlights current line
 set cursorline
-set ignorecase
 set smartcase
-set incsearch
+" Don't create those annoying backup files
 set noswapfile
 set nowritebackup
-set laststatus=2
+" Don't delete hidden buffers
 set hidden
+" Prefix current line with its line number
+set nu
+" Set relative line numbers
 set relativenumber
+" Improve command completion
 set wildchar=<Tab> wildmenu wildmode=full
 set wildcharm=<C-Z>
+" Disable modelines
 set modelines=0
 set inccommand=split
-" set mouse=nicr
+set mouse-=a
+" Center current line
 set scrolloff=9999
-" set autochdir
-set lazyredraw
-set noshowcmd
 " Do not wrap lines
 set nowrap
 " No syntax highlighting beyond 256 columns
@@ -82,6 +82,14 @@ set synmaxcol=256
 syntax sync minlines=256
 " Highlight trailing whitespace
 set list
+" Share clipboard between vim and mac
+set clipboard=unnamed
+" Reduces visual noise
+set noshowcmd
+" Show sign column by default
+set signcolumn=yes
+" Increase terminal scroll back size
+let g:terminal_scrollback_buffer_size = 10000
 
 syntax enable
 
@@ -92,17 +100,17 @@ let g:LanguageClient_serverCommands = {
 \ }
 
 " Automatically start language servers.
-let g:LanguageClient_autoStart = 1
+" let g:LanguageClient_autoStart = 1
 
 " Key bindings
-let mapleader=","
 nmap ; :
 nmap t :Tags<CR>
 map f :MyBuffers<CR>
 
 " Use ESC to switch to normal mode in terminals except in fzf
 autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
-autocmd TermOpen term://* tnoremap <buffer> <ESC> <C-\><C-n>
+autocmd TermOpen term://* tmap <buffer> <ESC> <C-\><C-n>
+autocmd TermOpen term://* tnoremap <buffer> <ESC-e> <nop>
 
 nmap <silent> <D-j> <C-W>w
 nmap <silent> <F2> <C-W>w
@@ -131,8 +139,8 @@ tmap <silent> <F7> <C-\><C-n>:exec DWM_Close()<CR>
 nmap <silent> <F10> :call DeleteWindow()<CR>
 tmap <silent> <F10> <C-\><C-n>:call DeleteWindow()<CR>
 
-nmap <silent> <F8> :call DWM_New()<CR>:terminal<CR>
-tmap <silent> <F8> <C-\><C-n>:call DWM_New()<CR>:terminal<CR>
+nmap <silent> <F8> :call DWM_New()<bar>:terminal<CR>
+tmap <silent> <F8> <C-\><C-n>:call DWM_New()<bar>:terminal<CR>
 
 nmap <silent> <F9> :call DWM_New()<CR>
 tmap <silent> <F9> <C-\><C-n>:call DWM_New()<CR>
@@ -153,22 +161,13 @@ autocmd BufWritePost * Neomake
 let b:deoplete_ignore_sources = ['buffer', 'neco-syntax']
 let g:deoplete#enable_at_startup = 1
 
-" let g:jsx_ext_required = 0
-
-" TODO: Choose proper gitgutter symbols
-" let g:gitgutter_sign_added = '✎'
 set fillchars+=vert:│
-" set fillchars+=vert:
-
-let g:terminal_scrollback_buffer_size = 10000
 
 " better key bindings for UltiSnipsExpandTrigger
 let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
-let g:ctrlp_max_height = 20
-" Plugin configuration
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 nmap c <Plug>(easymotion-s)
 let g:EasyMotion_smartcase = 1
@@ -177,24 +176,13 @@ let g:EasyMotion_smartcase = 1
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 0
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
-let g:airline_mode_map = {
-            \ '__' : '-',
-            \ 'n'  : '',
-            \ 'i'  : '',
-            \ 'R'  : 'R',
-            \ 'c'  : 'C',
-            \ 'v'  : 'V',
-            \ 'V'  : 'V',
-            \ '' : 'V',
-            \ 's'  : 'S',
-            \ 'S'  : 'S',
-            \ 't'  : '',
-            \ '' : 'S',
-            \ }
+let g:airline_mode_map = { 'n': ' ', 'i': ' ', 'v': ' ', 'V': ' ', '': ' ', 't': ' ' }
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_section_c = '%{FilenameOrTerm()}'
 
-set wildignore+=*/target/*,*/node_modules/*,*/bower_components/*,*.so,*.swp,*.zip
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_root_markers = ['.project', 'yiic.php']
+let g:gitgutter_sign_modified_removed = '~'
+let g:gitgutter_map_keys = 0
 
 " Leaving and entering terminal window
 autocmd BufWinEnter,WinEnter term://* startinsert
@@ -211,11 +199,16 @@ let g:airline_theme='oceanicnext'
 let g:enable_bold_font = 1
 set completeopt-=preview
 
+function! s:getMruBuffers()
+    return filter(g:mruBuffers, 'bufexists(v:val)&&buflisted(v:val)')
+endfunction
+
 function! DeleteWindow()
     let currentBufferNr = bufnr('%')
-    if len(g:mruBuffers) > 1
-        exec 'buffer '. g:mruBuffers[1]
-    else 
+    let l:mruBuffers = s:getMruBuffers()
+    if len(l:mruBuffers) > 1
+        exec 'buffer '. l:mruBuffers[1]
+    else
         exec 'Startify'
     endif
     " exec DWM_Close()
@@ -223,7 +216,7 @@ function! DeleteWindow()
 endfunction
 
 function! s:getCommonPath(paths)
-    if len(a:paths) < 2 
+    if len(a:paths) < 2
         return ''
     endif
     let common = split(a:paths[0], '/')
@@ -247,7 +240,7 @@ command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : 
 function! AddBuffer()
     let currentBuffer = expand('%:p')
     let g:mruBuffers = filter(g:mruBuffers, 'currentBuffer!=v:val&&bufexists(v:val)&&buflisted(v:val)')
-    if strlen(currentBuffer) > 0 && bufexists(currentBuffer) 
+    if strlen(currentBuffer) > 0 && bufexists(currentBuffer)
         let g:mruBuffers = [currentBuffer] + g:mruBuffers
     endif
 endfunction
@@ -257,17 +250,18 @@ function! s:bufopen(e)
 endfunction
 
 function! OpenBufferSelection()
-    if len(g:mruBuffers) == 0
+    let l:mruBuffers = s:getMruBuffers()
+    if len(l:mruBuffers) == 0
         echo 'No open buffers'
         return
     endif
-    let files = map(filter(deepcopy(g:mruBuffers), 'len(v:val) > 6 && v:val[:6] != "term://"'), 'buffer_number(v:val)."\t".WebDevIconsGetFileTypeSymbol(v:val)." ".v:val')
+    let files = map(filter(deepcopy(l:mruBuffers), 'len(v:val) > 6 && v:val[:6] != "term://"'), 'buffer_number(v:val)."\t".WebDevIconsGetFileTypeSymbol(v:val)." ".v:val')
 
     if len(files) > 1
         let files = files[1:] + [files[0]]
     endif
 
-    let terminals = map(filter(deepcopy(g:mruBuffers), 'len(v:val) > 6 && v:val[:6] == "term://"'), 'buffer_number(v:val)."\t  ".getbufvar(v:val, "term_title")')
+    let terminals = map(filter(deepcopy(l:mruBuffers), 'len(v:val) > 6 && v:val[:6] == "term://"'), 'buffer_number(v:val)."\t  ".getbufvar(v:val, "term_title")')
     let common = s:getCommonPath(files)
     let commonLength = strlen(common) > 0 ? strlen(common) + 2 : 0
     let buffers = map(files, 'strpart(v:val, commonLength)') + terminals
@@ -278,34 +272,9 @@ autocmd BufAdd,BufEnter,BufDelete  * :call AddBuffer()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 
 highlight Normal guibg=None ctermbg=None
-autocmd TermOpen * setlocal nonumber norelativenumber
+autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 autocmd TermOpen,BufEnter,BufLeave setlocal statusline=%{b:term_title}
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-let g:airline_section_c = '%{FilenameOrTerm()}'
 
 function! FilenameOrTerm()
-  return exists('b:term_title') ? b:term_title : expand('%:t')
-endfunction
-autocmd BufWinEnter,BufEnter,BufWinEnter * if &l:buftype != 'terminal' | lcd %:p:h | endif
-
-function! neomake#makers#ft#typescript#tsc() abort
-    " tsc should not be passed a single file.
-    return {
-        \ 'args': ['--project', neomake#utils#FindGlobFile('tsconfig.json'), '--noEmit', '--watch', 'false'],
-        \ 'append_file': 0,
-        \ 'errorformat':
-            \ '%E%f(%l\,%c): error %m,' .
-            \ '%E%f %#(%l\,%c): error %m,' .
-            \ '%E%f %#(%l\,%c): %m,' .
-            \ '%Eerror %m,' .
-            \ '%C%\s%\+%m'
-        \ }
-endfunction
-
-function! neomake#makers#ft#typescript#tslint() abort
-    return {
-         \ 'args': ['%:p'],
-         \ 'errorformat': '%EERROR: %f[%l\, %c]: %m,%E%f[%l\, %c]: %m'
-         \ }
+  return exists('b:term_title') ? b:term_title : expand('%:p:h:t') . '/' . expand('%:t')
 endfunction
