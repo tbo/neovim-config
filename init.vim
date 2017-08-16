@@ -37,6 +37,7 @@ Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
 " Helpers
 
 Plug 'simnalamburt/vim-mundo'
+Plug 'PeterRincker/vim-argumentative'
 " Tag auto generation
 Plug 'ludovicchabant/vim-gutentags'
 
@@ -112,6 +113,7 @@ autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
 autocmd TermOpen term://* tmap <buffer> <ESC> <C-\><C-n>
 autocmd TermOpen term://* tnoremap <buffer> <ESC-e> <nop>
 
+" autocmd BufWinEnter * lcd %:p:h
 nmap <silent> <D-j> <C-W>w
 nmap <silent> <F2> <C-W>w
 tmap <silent> <D-j> <C-\><C-n><C-W>w
@@ -153,11 +155,15 @@ nmap gn :call LanguageClient_textDocument_rename()<CR>
 nmap gr :call LanguageClient_textDocument_references()<CR>
 nmap <silent> <Esc> :noh<CR>
 
+autocmd FileType typescript,typescript.jsx nnoremap <buffer> gd :TSDef<CR>
+autocmd FileType typescript,typescript.jsx nnoremap <buffer> gn :TSRename<CR>
+autocmd FileType typescript,typescript.jsx nnoremap <buffer> gr :TSRefs<CR>
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd BufWritePost * Neomake
 " let g:neomake_error_sign = ''
 " let g:neomake_warning_sign = ''
 
+let g:deoplete#file#enable_buffer_path = 1
 let b:deoplete_ignore_sources = ['buffer', 'neco-syntax']
 let g:deoplete#enable_at_startup = 1
 
@@ -278,3 +284,4 @@ autocmd TermOpen,BufEnter,BufLeave setlocal statusline=%{b:term_title}
 function! FilenameOrTerm()
   return exists('b:term_title') ? b:term_title : expand('%:p:h:t') . '/' . expand('%:t')
 endfunction
+autocmd BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no | startinsert
