@@ -32,14 +32,17 @@ Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
-Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
+" Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+" Plug 'Quramy/tsuquyomi'
+
 
 " Helpers
 
 Plug 'simnalamburt/vim-mundo'
 Plug 'PeterRincker/vim-argumentative'
 " Tag auto generation
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 
 " Color Themes
 Plug 'mhartington/oceanic-next'
@@ -57,6 +60,7 @@ set softtabstop=4
 set expandtab
 " Highlights current line
 set cursorline
+set ignorecase
 set smartcase
 " Don't create those annoying backup files
 set noswapfile
@@ -72,7 +76,7 @@ set wildchar=<Tab> wildmenu wildmode=full
 set wildcharm=<C-Z>
 " Disable modelines
 set modelines=0
-set inccommand=split
+set inccommand=nosplit
 set mouse-=a
 " Center current line
 set scrolloff=9999
@@ -82,6 +86,7 @@ set nowrap
 set synmaxcol=256
 syntax sync minlines=256
 " Highlight trailing whitespace
+set listchars=tab:\ \ ,trail:·
 set list
 " Share clipboard between vim and mac
 set clipboard=unnamed
@@ -94,18 +99,21 @@ let g:terminal_scrollback_buffer_size = 10000
 
 syntax enable
 
+    " \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    " \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    " \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
 let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    \ 'go': ['~/go/bin/go-langserver'],
 \ }
 
 " Automatically start language servers.
-" let g:LanguageClient_autoStart = 1
+let g:LanguageClient_autoStart = 1
 
 " Key bindings
 nmap ; :
-nmap t :Tags<CR>
 map f :MyBuffers<CR>
 
 " Use ESC to switch to normal mode in terminals except in fzf
@@ -155,9 +163,15 @@ nmap gn :call LanguageClient_textDocument_rename()<CR>
 nmap gr :call LanguageClient_textDocument_references()<CR>
 nmap <silent> <Esc> :noh<CR>
 
-autocmd FileType typescript,typescript.jsx nnoremap <buffer> gd :TSDef<CR>
-autocmd FileType typescript,typescript.jsx nnoremap <buffer> gn :TSRename<CR>
-autocmd FileType typescript,typescript.jsx nnoremap <buffer> gr :TSRefs<CR>
+" let g:tsuquyomi_disable_default_mappings = 1
+" let g:tsuquyomi_disable_quickfix = 1
+" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gd :TSDef<CR>
+" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gn :TSRename<CR>
+" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gr :TSRefs<CR>
+" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gd :TsuDefinition<CR>
+" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gn :TsuRenameSymbol<CR>
+" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gr :TsuReferences<CR>
+" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gf :TsuQuickFix<CR>
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd BufWritePost * Neomake
 " let g:neomake_error_sign = ''
@@ -284,4 +298,6 @@ autocmd TermOpen,BufEnter,BufLeave setlocal statusline=%{b:term_title}
 function! FilenameOrTerm()
   return exists('b:term_title') ? b:term_title : expand('%:p:h:t') . '/' . expand('%:t')
 endfunction
-autocmd BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no | startinsert
+
+autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
+autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert
