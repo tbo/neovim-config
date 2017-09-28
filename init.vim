@@ -108,6 +108,7 @@ syntax enable
     " \ 'typescript': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
     " \ 'typescript.jsx': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
 let g:LanguageClient_serverCommands = {
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
     \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
     \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
     \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
@@ -176,8 +177,6 @@ nmap gn :call LanguageClient_textDocument_rename()<CR>
 nmap gr :call LanguageClient_textDocument_references()<CR>
 nmap <silent> <Esc> :noh<CR>
 
-" let g:tsuquyomi_disable_default_mappings = 1
-" let g:tsuquyomi_disable_quickfix = 1
 " autocmd FileType typescript,typescript.jsx nnoremap <buffer> gd :TSDef<CR>
 " autocmd FileType typescript,typescript.jsx nnoremap <buffer> gn :TSRename<CR>
 " autocmd FileType typescript,typescript.jsx nnoremap <buffer> gr :TSRefs<CR>
@@ -206,6 +205,7 @@ nmap c <Plug>(easymotion-s)
 let g:EasyMotion_smartcase = 1
 
 " Use powerline fonts for airline
+let g:airline_highlighting_cache = 1
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 0
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
@@ -314,3 +314,4 @@ endfunction
 
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
 autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert
+highlight airline_c ctermfg=15 ctermbg=68 guifg=#D8DEE9 guibg=#343D46
