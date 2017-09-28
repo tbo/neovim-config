@@ -32,6 +32,8 @@ Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/vim-lsp'
 " Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
 " Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 " Plug 'Quramy/tsuquyomi'
@@ -102,16 +104,27 @@ syntax enable
     " \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
     " \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
     " \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    " \ 'javascript': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
+    " \ 'typescript': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
+    " \ 'typescript.jsx': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
 let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
-    \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
-    \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
+    \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
+    \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
     \ 'go': ['~/go/bin/go-langserver'],
 \ }
 
+                " \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
 " Automatically start language servers.
 let g:LanguageClient_autoStart = 1
-
+" let g:lsp_log_verbose = 1
+" let g:lsp_log_file = expand('~/vim-lsp.log')
+"     au User lsp_setup call lsp#register_server({
+"                 \ 'name': 'typescript-language-server',
+"                 \ 'cmd': {server_info->['typescript-language-server', '--stdio']},
+"                 \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+"                 \ 'whitelist': ['typescript'],
+"                 \ })
 " Key bindings
 nmap ; :
 map f :MyBuffers<CR>
