@@ -42,7 +42,6 @@ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'simnalamburt/vim-mundo'
 Plug 'PeterRincker/vim-argumentative'
-
 " Color Themes
 Plug 'whatyouhide/vim-gotham'
 Plug 'ryanoasis/vim-devicons'
@@ -104,13 +103,16 @@ syntax enable
     " \ 'typescript': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
     " \ 'typescript.jsx': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
 let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
     \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-    \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
-    \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
-    \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
     \ 'go': ['~/go/bin/go-langserver'],
 \ }
 
+    " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
+    " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
+    " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
 " Automatically start language servers.
 let g:LanguageClient_autoStart = 1
 " let g:lsp_log_verbose = 1
