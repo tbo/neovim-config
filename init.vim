@@ -90,11 +90,11 @@ set list
 set clipboard=unnamed
 " Reduces visual noise
 set noshowcmd
+set noshowmode
 " Show sign column by default
 set signcolumn=yes
 " Increase terminal scroll back size
 let g:terminal_scrollback_buffer_size = 10000
-
 syntax enable
 
     " \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
@@ -204,7 +204,7 @@ if (has("termguicolors") || has("vimr"))
  set termguicolors
 endif
 
-highlight Comment cterm=italic
+autocmd ColorScheme * hi Comment gui=italic
 autocmd ColorScheme * hi VertSplit guibg=bg guifg=#091f2e
 autocmd ColorScheme * hi EndOfBuffer guifg=#0c1014
 " Unsetting the background color can have serious performance benefits
