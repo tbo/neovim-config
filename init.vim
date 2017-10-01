@@ -1,6 +1,7 @@
 let g:dwm_map_keys = 0
 let g:mruBuffers = get(g:, 'mruBuffers', [])
-
+let g:fzf_buffers_jump = 1
+let g:dwm_master_pane_width="55%"
 autocmd!
 
 call plug#begin('~/.nvim/plugged')
@@ -17,7 +18,6 @@ Plug 'Lokaltog/vim-easymotion'
 
 " User interface
 
-Plug 'bling/vim-airline'
 Plug 'spolu/dwm.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -38,16 +38,12 @@ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
 " Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 " Plug 'Quramy/tsuquyomi'
 
-
 " Helpers
 
 Plug 'simnalamburt/vim-mundo'
 Plug 'PeterRincker/vim-argumentative'
-" Tag auto generation
-" Plug 'ludovicchabant/vim-gutentags'
 
 " Color Themes
-Plug 'mhartington/oceanic-next'
 Plug 'whatyouhide/vim-gotham'
 Plug 'ryanoasis/vim-devicons'
 
@@ -115,7 +111,6 @@ let g:LanguageClient_serverCommands = {
     \ 'go': ['~/go/bin/go-langserver'],
 \ }
 
-                " \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
 " Automatically start language servers.
 let g:LanguageClient_autoStart = 1
 " let g:lsp_log_verbose = 1
@@ -126,6 +121,7 @@ let g:LanguageClient_autoStart = 1
 "                 \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
 "                 \ 'whitelist': ['typescript'],
 "                 \ })
+
 " Key bindings
 nmap ; :
 map f :MyBuffers<CR>
@@ -177,13 +173,6 @@ nmap gn :call LanguageClient_textDocument_rename()<CR>
 nmap gr :call LanguageClient_textDocument_references()<CR>
 nmap <silent> <Esc> :noh<CR>
 
-" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gd :TSDef<CR>
-" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gn :TSRename<CR>
-" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gr :TSRefs<CR>
-" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gd :TsuDefinition<CR>
-" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gn :TsuRenameSymbol<CR>
-" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gr :TsuReferences<CR>
-" autocmd FileType typescript,typescript.jsx nnoremap <buffer> gf :TsuQuickFix<CR>
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd BufWritePost * Neomake
 " let g:neomake_error_sign = ''
@@ -204,16 +193,6 @@ let g:EasyMotion_do_mapping = 0 " Disable default mappings
 nmap c <Plug>(easymotion-s)
 let g:EasyMotion_smartcase = 1
 
-" Use powerline fonts for airline
-let g:airline_highlighting_cache = 1
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 0
-let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
-let g:airline_mode_map = { 'n': ' ', 'i': ' ', 'v': ' ', 'V': ' ', '': ' ', 't': ' ' }
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-let g:airline_section_c = '%{FilenameOrTerm()}'
-
 let g:gitgutter_sign_modified_removed = '~'
 let g:gitgutter_map_keys = 0
 
@@ -226,9 +205,11 @@ if (has("termguicolors") || has("vimr"))
 endif
 
 highlight Comment cterm=italic
-autocmd ColorScheme * hi VertSplit guibg=bg ctermbg=None
+autocmd ColorScheme * hi VertSplit guibg=bg guifg=#091f2e
+autocmd ColorScheme * hi EndOfBuffer guifg=#0c1014
+" Unsetting the background color can have serious performance benefits
+autocmd ColorScheme * hi Normal guibg=None ctermbg=None
 colorscheme gotham
-let g:airline_theme='oceanicnext'
 let g:enable_bold_font = 1
 set completeopt-=preview
 
@@ -270,6 +251,8 @@ endfunction
 
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.rb''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
 
+autocmd! User FzfStatusLine setlocal statusline=\ 
+
 function! AddBuffer()
     let currentBuffer = expand('%:p')
     let g:mruBuffers = filter(g:mruBuffers, 'currentBuffer!=v:val&&bufexists(v:val)&&buflisted(v:val)')
@@ -304,14 +287,19 @@ endfunction
 autocmd BufAdd,BufEnter,BufDelete  * :call AddBuffer()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 
-highlight Normal guibg=None ctermbg=None
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
-autocmd TermOpen,BufEnter,BufLeave setlocal statusline=%{b:term_title}
 
+" Statusline
 function! FilenameOrTerm()
   return exists('b:term_title') ? b:term_title : expand('%:p:h:t') . '/' . expand('%:t')
 endfunction
 
+function! GitInfo()
+  let git = fugitive#head()
+  return git != '' ? ' '.git : ''
+endfunction
+
+set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}
+
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
 autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert
-highlight airline_c ctermfg=15 ctermbg=68 guifg=#D8DEE9 guibg=#343D46
