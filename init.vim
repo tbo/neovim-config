@@ -42,6 +42,7 @@ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'simnalamburt/vim-mundo'
 Plug 'PeterRincker/vim-argumentative'
+
 " Color Themes
 Plug 'whatyouhide/vim-gotham'
 Plug 'ryanoasis/vim-devicons'
@@ -92,6 +93,7 @@ set noshowcmd
 set noshowmode
 " Show sign column by default
 set signcolumn=yes
+set cc=120
 " Increase terminal scroll back size
 let g:terminal_scrollback_buffer_size = 10000
 syntax enable
@@ -293,12 +295,20 @@ autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 
 " Statusline
 function! FilenameOrTerm()
-  return exists('b:term_title') ? b:term_title : expand('%:p:h:t') . '/' . expand('%:t')
+  return exists('b:term_title') ? split(b:term_title, ',')[0] : expand('%:p:h:t') . '/' . expand('%:t')
 endfunction
 
 function! GitInfo()
-  let git = fugitive#head()
-  return git != '' ? ' '.git : ''
+    if exists('b:term_title')
+        let title = split(b:term_title, ',')
+        if len(title) < 2
+            return ''
+        endif
+        let git = title[-1]
+    else
+        let git = fugitive#head()
+    endif
+    return git != '' ? ' '.git : ''
 endfunction
 
 set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}
