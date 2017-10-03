@@ -146,8 +146,8 @@ nmap <silent> <F3> <C-W>W
 tmap <silent> <D-k> <C-\><C-n><C-W>W
 tmap <silent> <F3> <C-\><C-n><C-W>W
 
-nmap <silent> <D-Enter> :call DWM_AutoEnter()<CR>
-nmap <silent> <F4> :call DWM_AutoEnter()<CR>
+nmap <silent> <D-Enter> :call DWM_Focus()<CR>
+nmap <silent> <F4> :call DWM_Focus()<CR>
 tmap <silent> <D-Enter> <C-\><C-n>:call DWM_Focus()<CR>
 tmap <silent> <F4> <C-\><C-n>:call DWM_Focus()<CR>
 
