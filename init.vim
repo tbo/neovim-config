@@ -1,7 +1,6 @@
 let g:dwm_map_keys = 0
 let g:mruBuffers = get(g:, 'mruBuffers', [])
 let g:fzf_buffers_jump = 1
-let g:dwm_master_pane_width="55%"
 autocmd!
 
 call plug#begin('~/.nvim/plugged')
@@ -12,6 +11,7 @@ Plug 'tpope/vim-sensible'
 
 " General Purpose
 
+" Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
 Plug 'Lokaltog/vim-easymotion'
@@ -32,6 +32,7 @@ Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+
 " Plug 'prabirshrestha/async.vim'
 " Plug 'prabirshrestha/vim-lsp'
 " Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
@@ -91,6 +92,7 @@ set clipboard=unnamed
 " Reduces visual noise
 set noshowcmd
 set noshowmode
+set nolazyredraw
 " Show sign column by default
 set signcolumn=yes
 set cc=120
@@ -101,13 +103,10 @@ syntax enable
     " \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
     " \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
     " \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    " \ 'javascript': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
-    " \ 'typescript': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
-    " \ 'typescript.jsx': ['~/.config/fnm/bin/typescript-language-server', '--stdio'],
 let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
     \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
     \ 'go': ['~/go/bin/go-langserver'],
 \ }
@@ -281,7 +280,7 @@ function! OpenBufferSelection()
         let files = files[1:] + [files[0]]
     endif
 
-    let terminals = map(filter(deepcopy(l:mruBuffers), 'len(v:val) > 6 && v:val[:6] == "term://"'), 'buffer_number(v:val)."\t  ".getbufvar(v:val, "term_title")')
+    let terminals = map(filter(deepcopy(l:mruBuffers), 'len(v:val) > 6 && v:val[:6] == "term://"'), 'buffer_number(v:val)."\t  ".split(getbufvar(v:val, "term_title"), ",")[0]')
     let common = s:getCommonPath(files)
     let commonLength = strlen(common) > 0 ? strlen(common) + 2 : 0
     let buffers = map(files, 'strpart(v:val, commonLength)') + terminals
