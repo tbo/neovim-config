@@ -230,13 +230,17 @@ endfunction
 
 function! DeleteWindow()
     let currentBufferNr = bufnr('%')
-    let l:mruBuffers = s:getMruBuffers()
-    if len(l:mruBuffers) > 1
-        exec 'buffer '. l:mruBuffers[1]
+    let currentBuffer = expand('%:p')
+    if currentBuffer[:6] == "term://"
+        exec DWM_Close()
     else
-        exec 'Startify'
+        let l:mruBuffers = s:getMruFileBuffers()
+        if len(l:mruBuffers) > 1
+            exec 'buffer '. l:mruBuffers[1]
+        else
+            exec 'Startify'
+        endif
     endif
-    " exec DWM_Close()
     exec 'bd! ' . currentBufferNr
 endfunction
 
