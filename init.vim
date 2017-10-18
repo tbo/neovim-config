@@ -301,6 +301,7 @@ endfunction
 
 autocmd BufAdd,BufEnter,BufDelete,TermOpen  * :call AddBuffer()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
+command! -bang -nargs=* Bl echo expand('%:p:h')
 
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 
