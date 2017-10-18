@@ -2,7 +2,6 @@ let g:dwm_map_keys = 0
 let g:mruBuffers = get(g:, 'mruBuffers', [])
 let g:fzf_buffers_jump = 1
 autocmd!
-
 call plug#begin('~/.nvim/plugged')
 
 " Defaults defined by tpope
@@ -98,15 +97,16 @@ set signcolumn=yes
 set cc=120
 " Increase terminal scroll back size
 let g:terminal_scrollback_buffer_size = 10000
+let g:startify_change_to_dir = 0
 syntax enable
 
-    " \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    " \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    " \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
 let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
-    \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
-    \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
     \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
     \ 'go': ['~/go/bin/go-langserver'],
 \ }
@@ -115,6 +115,8 @@ let g:LanguageClient_serverCommands = {
     " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
     " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
 " Automatically start language servers.
+" let g:LanguageClient_windowLogMessageLevel = 4
+let g:LanguageClient_setLoggingLevel = 'INFO'
 let g:LanguageClient_autoStart = 1
 " let g:lsp_log_verbose = 1
 " let g:lsp_log_file = expand('~/vim-lsp.log')
@@ -178,8 +180,6 @@ nmap <silent> <Esc> :noh<CR>
 
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd BufWritePost * Neomake
-" let g:neomake_error_sign = ''
-" let g:neomake_warning_sign = ''
 
 let g:deoplete#file#enable_buffer_path = 1
 let b:deoplete_ignore_sources = ['buffer', 'neco-syntax']
@@ -218,6 +218,14 @@ set completeopt-=preview
 
 function! s:getMruBuffers()
     return filter(g:mruBuffers, 'bufexists(v:val)&&buflisted(v:val)')
+endfunction
+
+function! s:getMruFileBuffers()
+    return filter(deepcopy(s:getMruBuffers()), 'len(v:val) > 6 && v:val[:6] != "term://"')
+endfunction
+
+function! s:getMruTerminalBuffers()
+    return filter(deepcopy(s:getMruBuffers()), 'len(v:val) > 6 && v:val[:6] == "term://"')
 endfunction
 
 function! DeleteWindow()
@@ -274,20 +282,20 @@ function! OpenBufferSelection()
         echo 'No open buffers'
         return
     endif
-    let files = map(filter(deepcopy(l:mruBuffers), 'len(v:val) > 6 && v:val[:6] != "term://"'), 'buffer_number(v:val)."\t".WebDevIconsGetFileTypeSymbol(v:val)." ".v:val')
+    let files = map(s:getMruFileBuffers(), 'buffer_number(v:val)."\t".WebDevIconsGetFileTypeSymbol(v:val)." ".v:val')
 
     if len(files) > 1
         let files = files[1:] + [files[0]]
     endif
 
-    let terminals = map(filter(deepcopy(l:mruBuffers), 'len(v:val) > 6 && v:val[:6] == "term://"'), 'buffer_number(v:val)."\t  ".split(getbufvar(v:val, "term_title"), ",")[0]')
+    let terminals = map(s:getMruTerminalBuffers(), 'buffer_number(v:val)."\t  ".split(getbufvar(v:val, "term_title"), ",")[0]')
     let common = s:getCommonPath(files)
     let commonLength = strlen(common) > 0 ? strlen(common) + 2 : 0
     let buffers = map(files, 'strpart(v:val, commonLength)') + terminals
     call fzf#run({'source': buffers, 'sink': function('s:bufopen'), 'down': len(buffers)+3})
 endfunction
 
-autocmd BufAdd,BufEnter,BufDelete  * :call AddBuffer()
+autocmd BufAdd,BufEnter,BufDelete,TermOpen  * :call AddBuffer()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
