@@ -26,11 +26,13 @@ Plug 'mhinz/vim-startify'
 " Syntax & completion
 
 Plug 'neomake/neomake'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'roxma/nvim-completion-manager'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/echodoc.vim'
 
 " Plug 'prabirshrestha/async.vim'
 " Plug 'prabirshrestha/vim-lsp'
@@ -81,8 +83,8 @@ set scrolloff=9999
 " Do not wrap lines
 set nowrap
 " No syntax highlighting beyond 256 columns
-set synmaxcol=256
-syntax sync minlines=256
+set synmaxcol=120
+syntax sync minlines=240
 " Highlight trailing whitespace
 set listchars=tab:\ \ ,trail:·
 set list
@@ -94,29 +96,33 @@ set noshowmode
 set nolazyredraw
 " Show sign column by default
 set signcolumn=yes
-set cc=120
 " Increase terminal scroll back size
 let g:terminal_scrollback_buffer_size = 10000
 let g:startify_change_to_dir = 0
 syntax enable
 
+    " \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    " \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
+    " \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
     " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
     " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
     " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
 let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'javascript': ['tslsp'],
+    \ 'typescript': ['tslsp'],
+    \ 'typescript.jsx': ['tslsp'],
+    \ 'javascript.jsx': ['tslsp'],
+    \ 'python': ['pyls'],
+    \ 'rust': ['rustup', 'run', 'stable', 'rls'],
     \ 'go': ['~/go/bin/go-langserver'],
 \ }
 
-    " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
-    " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
-    " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--log-file', '/tmp/tslog.txt'],
+    " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
+    " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
+    " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
 " Automatically start language servers.
-" let g:LanguageClient_windowLogMessageLevel = 4
-let g:LanguageClient_setLoggingLevel = 'INFO'
+let g:LanguageClient_windowLogMessageLevel = 'Error'
+" let g:LanguageClient_setLoggingLevel = 'INFO'
 let g:LanguageClient_autoStart = 1
 " let g:lsp_log_verbose = 1
 " let g:lsp_log_file = expand('~/vim-lsp.log')
@@ -220,12 +226,29 @@ function! s:getMruBuffers()
     return filter(g:mruBuffers, 'bufexists(v:val)&&buflisted(v:val)')
 endfunction
 
+function! IsTerminalBuffer(name)
+    return len(a:name) > 6 && a:name[:6] == "term://"
+endfunction
+
 function! s:getMruFileBuffers()
-    return filter(deepcopy(s:getMruBuffers()), 'len(v:val) > 6 && v:val[:6] != "term://"')
+    return filter(deepcopy(s:getMruBuffers()), '!IsTerminalBuffer(v:val)')
 endfunction
 
 function! s:getMruTerminalBuffers()
-    return filter(deepcopy(s:getMruBuffers()), 'len(v:val) > 6 && v:val[:6] == "term://"')
+    return filter(deepcopy(s:getMruBuffers()), 'IsTerminalBuffer(v:val)')
+endfunction
+
+function! FocusFileWindow()
+    let fileWindows = s:getFileWindows()
+    if len(fileWindows) > 0
+        exe fileWindows[0] . "wincmd w" 
+    else
+        call DWM_New()
+    endif
+endfunction
+
+function! s:getFileWindows()
+    return filter(range(1, winnr('$')), '!IsTerminalBuffer(bufname(winbufnr(v:val)))')
 endfunction
 
 function! DeleteWindow()
