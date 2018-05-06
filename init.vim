@@ -26,19 +26,24 @@ Plug 'mhinz/vim-startify'
 " Syntax & completion
 
 Plug 'neomake/neomake'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'roxma/nvim-completion-manager'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'roxma/nvim-completion-manager'
 Plug 'SirVer/ultisnips'
+" Plug 'honza/vim-snippets'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/echodoc.vim'
+Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
+" Plug 'artur-shaik/vim-javacomplete2'
 
 " Plug 'prabirshrestha/async.vim'
 " Plug 'prabirshrestha/vim-lsp'
 " Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
 " Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 " Plug 'Quramy/tsuquyomi'
+Plug 'jparise/vim-graphql' 
+Plug 'styled-components/vim-styled-components'
 
 " Helpers
 
@@ -83,7 +88,7 @@ set scrolloff=9999
 " Do not wrap lines
 set nowrap
 " No syntax highlighting beyond 256 columns
-set synmaxcol=120
+set synmaxcol=240
 syntax sync minlines=240
 " Highlight trailing whitespace
 set listchars=tab:\ \ ,trail:·
@@ -107,16 +112,16 @@ syntax enable
     " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
     " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
     " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
+    " \ 'javascript': ['tslsp'],
+    " \ 'typescript': ['tslsp'],
+    " \ 'typescript.jsx': ['tslsp'],
+    " \ 'javascript.jsx': ['tslsp'],
 let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['tslsp'],
-    \ 'typescript': ['tslsp'],
-    \ 'typescript.jsx': ['tslsp'],
-    \ 'javascript.jsx': ['tslsp'],
     \ 'python': ['pyls'],
     \ 'rust': ['rustup', 'run', 'stable', 'rls'],
     \ 'go': ['~/go/bin/go-langserver'],
+    \ 'java': ['javalsp'],
 \ }
-
     " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
     " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
     " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
@@ -182,13 +187,18 @@ nmap gh :call LanguageClient_textDocument_hover()<CR>
 nmap gd :call LanguageClient_textDocument_definition()<CR>
 nmap gn :call LanguageClient_textDocument_rename()<CR>
 nmap gr :call LanguageClient_textDocument_references()<CR>
+autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gh :TSType<CR>
+autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gd :TSDef<CR>
+autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gn :TSRename<CR>
+autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gr :TSRefs<CR>
+autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gm :TSImport<CR>
 nmap <silent> <Esc> :noh<CR>
 
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd BufWritePost * Neomake
 
 let g:deoplete#file#enable_buffer_path = 1
-let b:deoplete_ignore_sources = ['buffer', 'neco-syntax']
+let b:deoplete_ignore_sources = ['buffer', 'neco-syntax', 'cwd']
 let g:deoplete#enable_at_startup = 1
 
 set fillchars+=vert:│
@@ -197,6 +207,7 @@ set fillchars+=vert:│
 let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+let g:UltiSnipsSnippetDirectories = ['~/.config/nvim/ultisnips', 'UltiSnips']
 
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 nmap c <Plug>(easymotion-s)
@@ -238,6 +249,10 @@ function! s:getMruTerminalBuffers()
     return filter(deepcopy(s:getMruBuffers()), 'IsTerminalBuffer(v:val)')
 endfunction
 
+function! s:getFileBuffers()
+    return filter(filter(range(1,bufnr('$')), 'buflisted(v:val)'), '!IsTerminalBuffer(bufname(v:val))')
+endfunction
+
 function! FocusFileWindow()
     let fileWindows = s:getFileWindows()
     if len(fileWindows) > 0
@@ -265,6 +280,12 @@ function! DeleteWindow()
         endif
     endif
     exec 'bd! ' . currentBufferNr
+endfunction
+
+
+function! CleanUpBuffers()
+    let l:mruBuffers = s:getFileBuffers()
+    exec 'bd! ' . join(l:mruBuffers, ' ')
 endfunction
 
 function! s:getCommonPath(paths)
@@ -323,6 +344,7 @@ function! OpenBufferSelection()
 endfunction
 
 autocmd BufAdd,BufEnter,BufDelete,TermOpen  * :call AddBuffer()
+command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')
 
