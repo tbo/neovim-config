@@ -355,6 +355,13 @@ function! FilenameOrTerm()
   return exists('b:term_title') ? split(b:term_title, ',')[0] : expand('%:p:h:t') . '/' . expand('%:t')
 endfunction
 
+function! RedrawStatusline(timer)
+	execute 'redrawstatus'
+    if !exists('b:term_title')
+        let noop = timer_stop(a:timer)
+    endif 
+endfunction
+
 function! GitInfo()
     if exists('b:term_title')
         let title = split(b:term_title, ',')
@@ -371,4 +378,4 @@ endfunction
 set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}
 
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
-autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert
+autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1})
