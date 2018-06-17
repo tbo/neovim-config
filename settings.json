@@ -1,0 +1,7 @@
+{
+    "initializationOptions": {
+        "extendedClientCapabilities": {
+            "classFileContentsSupport": true
+        }
+    }
+}

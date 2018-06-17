@@ -13,6 +13,7 @@ Plug 'tpope/vim-sensible'
 " Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'Lokaltog/vim-easymotion'
 
 " User interface
@@ -22,26 +23,30 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
+Plug 'airblade/vim-rooter'
 
 " Syntax & completion
 
-Plug 'neomake/neomake'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'neomake/neomake'
+" Plug 'w0rp/ale'
 " Plug 'roxma/nvim-completion-manager'
 Plug 'SirVer/ultisnips'
-" Plug 'honza/vim-snippets'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
-Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/echodoc.vim'
-Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
-" Plug 'artur-shaik/vim-javacomplete2'
+Plug 'autozimu/LanguageClient-neovim', { 
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh'
+    \}
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/echodoc.vim'
+Plug 'mhartington/nvim-typescript', { 'branch': 'next-node', 'do': './install.sh' }
 
-" Plug 'prabirshrestha/async.vim'
 " Plug 'prabirshrestha/vim-lsp'
-" Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
-" Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-" Plug 'Quramy/tsuquyomi'
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
+
 Plug 'jparise/vim-graphql' 
 Plug 'styled-components/vim-styled-components'
 
@@ -106,12 +111,6 @@ let g:terminal_scrollback_buffer_size = 10000
 let g:startify_change_to_dir = 0
 syntax enable
 
-    " \ 'javascript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    " \ 'typescript': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    " \ 'typescript.jsx': ['~/git/javascript-typescript-langserver/lib/language-server-stdio.js'],
-    " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
-    " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
-    " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio'],
     " \ 'javascript': ['tslsp'],
     " \ 'typescript': ['tslsp'],
     " \ 'typescript.jsx': ['tslsp'],
@@ -122,14 +121,14 @@ let g:LanguageClient_serverCommands = {
     \ 'go': ['~/go/bin/go-langserver'],
     \ 'java': ['javalsp'],
 \ }
-    " \ 'javascript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
-    " \ 'typescript': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
-    " \ 'typescript.jsx': ['~/git/typescript-language-server/lib/cli.js', '--stdio', '--tsserver-log-file=/Users/tbo/tslog.txt', '--log-level=4'],
 " Automatically start language servers.
 let g:LanguageClient_windowLogMessageLevel = 'Error'
-" let g:LanguageClient_setLoggingLevel = 'INFO'
+let g:LanguageClient_settingsPath = '/Users/tbo/.config/nvim/settings.json'
+
+let g:LanguageClient_loggingLevel = 'DEBUG'
 let g:LanguageClient_autoStart = 1
-" let g:lsp_log_verbose = 1
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('~/vim-lsp.log')
 " let g:lsp_log_file = expand('~/vim-lsp.log')
 "     au User lsp_setup call lsp#register_server({
 "                 \ 'name': 'typescript-language-server',
@@ -137,7 +136,13 @@ let g:LanguageClient_autoStart = 1
 "                 \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
 "                 \ 'whitelist': ['typescript'],
 "                 \ })
-
+"
+    " au User lsp_setup call lsp#register_server({
+    "     \ 'name': 'java-language-server',
+    "     \ 'cmd': {server_info->['/Users/tbo/bin/javalsp']},
+    "     \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'build.gradle'))},
+    "     \ 'whitelist': ['java'],
+    "     \ })
 " Key bindings
 nmap ; :
 map f :MyBuffers<CR>
@@ -187,6 +192,7 @@ nmap gh :call LanguageClient_textDocument_hover()<CR>
 nmap gd :call LanguageClient_textDocument_definition()<CR>
 nmap gn :call LanguageClient_textDocument_rename()<CR>
 nmap gr :call LanguageClient_textDocument_references()<CR>
+nmap gq :call LanguageClient#textDocument_codeAction()<CR>
 autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gh :TSType<CR>
 autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gd :TSDef<CR>
 autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gn :TSRename<CR>
@@ -195,11 +201,12 @@ autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gm :TS
 nmap <silent> <Esc> :noh<CR>
 
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
-autocmd BufWritePost * Neomake
+" autocmd BufWritePost * Neomake
 
 let g:deoplete#file#enable_buffer_path = 1
-let b:deoplete_ignore_sources = ['buffer', 'neco-syntax', 'cwd']
+let g:deoplete_ignore_sources = ['buffer', 'neco-syntax', 'cwd']
 let g:deoplete#enable_at_startup = 1
+" let g:nvim_typescript#debug_enabled = 1
 
 set fillchars+=vert:│
 
@@ -213,7 +220,11 @@ let g:EasyMotion_do_mapping = 0 " Disable default mappings
 nmap c <Plug>(easymotion-s)
 let g:EasyMotion_smartcase = 1
 
-let g:gitgutter_sign_modified_removed = '~'
+let g:gitgutter_sign_added = '│'
+let g:gitgutter_sign_modified = '│'
+let g:gitgutter_sign_removed = '│'
+let g:gitgutter_sign_removed_first_line = '│'
+let g:gitgutter_sign_modified_removed = '│'
 let g:gitgutter_map_keys = 0
 
 " Leaving and entering terminal window
@@ -229,8 +240,10 @@ autocmd ColorScheme * hi VertSplit guibg=bg guifg=#091f2e
 autocmd ColorScheme * hi EndOfBuffer guifg=#0c1014
 " Unsetting the background color can have serious performance benefits
 autocmd ColorScheme * hi Normal guibg=None ctermbg=None
+autocmd ColorScheme * hi ALEError ctermfg=1 guifg=#c23127 gui=bold
 colorscheme gotham
 let g:enable_bold_font = 1
+let g:vebugger_use_tags = 1
 set completeopt-=preview
 
 function! s:getMruBuffers()
@@ -279,7 +292,7 @@ function! DeleteWindow()
             exec 'Startify'
         endif
     endif
-    exec 'bd! ' . currentBufferNr
+    exec 'silent! bd! ' . currentBufferNr
 endfunction
 
 
@@ -377,5 +390,9 @@ endfunction
 
 set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}
 
+function! FixWindow()
+    execute "res -1 | res +1"
+endfunction
+
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
-autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1})
+autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
