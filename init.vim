@@ -40,7 +40,7 @@ Plug 'autozimu/LanguageClient-neovim', {
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Plug 'Shougo/echodoc.vim'
-Plug 'mhartington/nvim-typescript', { 'branch': 'next-node', 'do': './install.sh' }
+" Plug 'mhartington/nvim-typescript', { 'branch': 'next-node', 'do': './install.sh' }
 
 " Plug 'prabirshrestha/vim-lsp'
 " Plug 'prabirshrestha/asyncomplete.vim'
@@ -111,11 +111,11 @@ let g:terminal_scrollback_buffer_size = 10000
 let g:startify_change_to_dir = 0
 syntax enable
 
-    " \ 'javascript': ['tslsp'],
-    " \ 'typescript': ['tslsp'],
-    " \ 'typescript.jsx': ['tslsp'],
-    " \ 'javascript.jsx': ['tslsp'],
 let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['tslsp'],
+    \ 'typescript': ['tslsp'],
+    \ 'typescript.jsx': ['tslsp'],
+    \ 'javascript.jsx': ['tslsp'],
     \ 'python': ['pyls'],
     \ 'rust': ['rustup', 'run', 'stable', 'rls'],
     \ 'go': ['~/go/bin/go-langserver'],
@@ -125,6 +125,7 @@ let g:LanguageClient_serverCommands = {
 let g:LanguageClient_windowLogMessageLevel = 'Error'
 let g:LanguageClient_settingsPath = '/Users/tbo/.config/nvim/settings.json'
 
+let g:LanguageClient_loggingFile = '/Users/tbo/logs/LanguageClient.log'
 let g:LanguageClient_loggingLevel = 'DEBUG'
 let g:LanguageClient_autoStart = 1
 let g:lsp_log_verbose = 1
@@ -193,11 +194,11 @@ nmap gd :call LanguageClient_textDocument_definition()<CR>
 nmap gn :call LanguageClient_textDocument_rename()<CR>
 nmap gr :call LanguageClient_textDocument_references()<CR>
 nmap gq :call LanguageClient#textDocument_codeAction()<CR>
-autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gh :TSType<CR>
-autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gd :TSDef<CR>
-autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gn :TSRename<CR>
-autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gr :TSRefs<CR>
-autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gm :TSImport<CR>
+" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gh :TSType<CR>
+" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gd :TSDef<CR>
+" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gn :TSRename<CR>
+" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gr :TSRefs<CR>
+" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gm :TSImport<CR>
 nmap <silent> <Esc> :noh<CR>
 
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
