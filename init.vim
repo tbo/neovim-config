@@ -13,8 +13,9 @@ Plug 'tpope/vim-sensible'
 " Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'Lokaltog/vim-easymotion'
+Plug 'michaeljsmith/vim-indent-object'
 
 " User interface
 
@@ -33,6 +34,7 @@ Plug 'airblade/vim-rooter'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
+" Plug '/Users/tbo/git/LanguageClient-neovim'
 Plug 'autozimu/LanguageClient-neovim', { 
     \ 'branch': 'next',
     \ 'do': 'bash install.sh'
@@ -153,7 +155,6 @@ autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
 autocmd TermOpen term://* tmap <buffer> <ESC> <C-\><C-n>
 autocmd TermOpen term://* tnoremap <buffer> <ESC-e> <nop>
 
-" autocmd BufWinEnter * lcd %:p:h
 nmap <silent> <D-j> <C-W>w
 nmap <silent> <F2> <C-W>w
 tmap <silent> <D-j> <C-\><C-n><C-W>w
