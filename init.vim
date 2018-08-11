@@ -98,6 +98,7 @@ set noshowmode
 set nolazyredraw
 " Show sign column by default
 set signcolumn=yes
+set updatetime=100
 " Increase terminal scroll back size
 let g:terminal_scrollback_buffer_size = 10000
 let g:startify_change_to_dir = 0
