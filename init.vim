@@ -330,7 +330,7 @@ function! OpenBufferSelection()
         let files = files[1:] + [files[0]]
     endif
 
-    let terminals = map(s:getMruTerminalBuffers(), 'buffer_number(v:val)."\t  ".split(getbufvar(v:val, "term_title"), ",")[0]')
+    let terminals = map(filter(s:getMruTerminalBuffers(), 'bufwinnr(v:val) == -1'), 'buffer_number(v:val)."\t  ".split(getbufvar(v:val, "term_title"), ",")[0]')
     let common = s:getCommonPath(files)
     let commonLength = strlen(common) > 0 ? strlen(common) + 2 : 0
     let buffers = map(files, 'strpart(v:val, commonLength)') + terminals
