@@ -10,10 +10,8 @@ Plug 'tpope/vim-sensible'
 
 " General Purpose
 
-" Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
-" Plug 'ludovicchabant/vim-gutentags'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'michaeljsmith/vim-indent-object'
 
@@ -28,9 +26,7 @@ Plug 'airblade/vim-rooter'
 
 " Syntax & completion
 
-" Plug 'neomake/neomake'
 " Plug 'w0rp/ale'
-" Plug 'roxma/nvim-completion-manager'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
@@ -41,16 +37,10 @@ Plug 'autozimu/LanguageClient-neovim', {
     \}
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'Shougo/echodoc.vim'
-" Plug 'mhartington/nvim-typescript', { 'branch': 'next-node', 'do': './install.sh' }
-
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 Plug 'jparise/vim-graphql' 
-Plug 'styled-components/vim-styled-components'
+Plug 'styled-components/vim-styled-components', {'branch': 'main'}
 
 " Helpers
 
@@ -121,8 +111,9 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
     \ 'rust': ['rustup', 'run', 'stable', 'rls'],
     \ 'go': ['~/go/bin/go-langserver'],
-    \ 'java': ['javalsp'],
+    \ 'java': ['~/bin/javalsp'],
 \ }
+"
 " Automatically start language servers.
 let g:LanguageClient_windowLogMessageLevel = 'Error'
 let g:LanguageClient_settingsPath = '/Users/tbo/.config/nvim/settings.json'
@@ -130,22 +121,7 @@ let g:LanguageClient_settingsPath = '/Users/tbo/.config/nvim/settings.json'
 let g:LanguageClient_loggingFile = '/Users/tbo/logs/LanguageClient.log'
 let g:LanguageClient_loggingLevel = 'DEBUG'
 let g:LanguageClient_autoStart = 1
-let g:lsp_log_verbose = 1
-let g:lsp_log_file = expand('~/vim-lsp.log')
-" let g:lsp_log_file = expand('~/vim-lsp.log')
-"     au User lsp_setup call lsp#register_server({
-"                 \ 'name': 'typescript-language-server',
-"                 \ 'cmd': {server_info->['typescript-language-server', '--stdio']},
-"                 \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-"                 \ 'whitelist': ['typescript'],
-"                 \ })
-"
-    " au User lsp_setup call lsp#register_server({
-    "     \ 'name': 'java-language-server',
-    "     \ 'cmd': {server_info->['/Users/tbo/bin/javalsp']},
-    "     \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'build.gradle'))},
-    "     \ 'whitelist': ['java'],
-    "     \ })
+
 " Key bindings
 nmap ; :
 map f :MyBuffers<CR>
@@ -165,6 +141,7 @@ nmap <silent> <F3> <C-W>W
 tmap <silent> <D-k> <C-\><C-n><C-W>W
 tmap <silent> <F3> <C-\><C-n><C-W>W
 
+nmap <silent> <F12> :silent !curl -X POST localhost:8080/actuator/restart<CR>
 nmap <silent> <D-Enter> :call DWM_Focus()<CR>
 nmap <silent> <F4> :call DWM_Focus()<CR>
 tmap <silent> <D-Enter> <C-\><C-n>:call DWM_Focus()<CR>
@@ -189,26 +166,18 @@ nmap <silent> <F9> :call DWM_New()<CR>
 tmap <silent> <F9> <C-\><C-n>:call DWM_New()<CR>
 
 map <Space> :GFiles<CR>
-map s :w<CR>
+nmap s :w<CR>
 nmap gh :call LanguageClient_textDocument_hover()<CR>
 nmap gd :call LanguageClient_textDocument_definition()<CR>
 nmap gn :call LanguageClient_textDocument_rename()<CR>
 nmap gr :call LanguageClient_textDocument_references()<CR>
 nmap gq :call LanguageClient#textDocument_codeAction()<CR>
-" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gh :TSType<CR>
-" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gd :TSDef<CR>
-" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gn :TSRename<CR>
-" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gr :TSRefs<CR>
-" autocmd FileType typescript,typescript.jsx,javascript,javascript.jsx nmap gm :TSImport<CR>
+nmap gu :GitGutterUndoHunk<CR>
 nmap <silent> <Esc> :noh<CR>
-
-autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
-" autocmd BufWritePost * Neomake
 
 let g:deoplete#file#enable_buffer_path = 1
 let g:deoplete_ignore_sources = ['buffer', 'neco-syntax', 'cwd']
 let g:deoplete#enable_at_startup = 1
-" let g:nvim_typescript#debug_enabled = 1
 
 set fillchars+=vert:│
 
@@ -229,10 +198,6 @@ let g:gitgutter_sign_removed_first_line = '│'
 let g:gitgutter_sign_modified_removed = '│'
 let g:gitgutter_map_keys = 0
 
-" Leaving and entering terminal window
-autocmd BufWinEnter,WinEnter term://* startinsert
-autocmd BufLeave term://* stopinsert
-
 if (has("termguicolors") || has("vimr"))
  set termguicolors
 endif
@@ -243,10 +208,26 @@ autocmd ColorScheme * hi EndOfBuffer guifg=#0c1014
 " Unsetting the background color can have serious performance benefits
 autocmd ColorScheme * hi Normal guibg=None ctermbg=None
 autocmd ColorScheme * hi ALEError ctermfg=1 guifg=#c23127 gui=bold
+
 colorscheme gotham
 let g:enable_bold_font = 1
 let g:vebugger_use_tags = 1
 set completeopt-=preview
+
+" Leaving and entering terminal window
+autocmd BufWinEnter,WinEnter term://* startinsert
+autocmd BufLeave term://* stopinsert
+autocmd BufAdd,BufEnter,BufDelete,TermOpen  * :call AddBuffer()
+autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
+autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
+autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
+autocmd! User FzfStatusLine setlocal statusline=\ 
+
+command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
+command! -bang -nargs=* MyBuffers call OpenBufferSelection()
+command! -bang -nargs=* Bl echo expand('%:p:h')
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.rb''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
 
 function! s:getMruBuffers()
     return filter(g:mruBuffers, 'bufexists(v:val)&&buflisted(v:val)')
@@ -323,10 +304,6 @@ function! s:getCommonPath(paths)
     return join(common, '/')
 endfunction
 
-command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.rb''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
-
-autocmd! User FzfStatusLine setlocal statusline=\ 
-
 function! AddBuffer()
     let currentBuffer = expand('%:p')
     let g:mruBuffers = filter(g:mruBuffers, 'currentBuffer!=v:val&&bufexists(v:val)&&buflisted(v:val)')
@@ -358,16 +335,9 @@ function! OpenBufferSelection()
     call fzf#run({'source': buffers, 'sink': function('s:bufopen'), 'down': len(buffers)+3})
 endfunction
 
-autocmd BufAdd,BufEnter,BufDelete,TermOpen  * :call AddBuffer()
-command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
-command! -bang -nargs=* MyBuffers call OpenBufferSelection()
-command! -bang -nargs=* Bl echo expand('%:p:h')
-
-autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
-
 " Statusline
 function! FilenameOrTerm()
-  return exists('b:term_title') ? split(b:term_title, ',')[0] : expand('%:p:h:t') . '/' . expand('%:t')
+    return exists('b:term_title') ? get(split(b:term_title, ','), 0, 'unknown') : expand('%:p:h:t') . '/' . expand('%:t')
 endfunction
 
 function! RedrawStatusline(timer)
@@ -395,6 +365,3 @@ set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{Git
 function! FixWindow()
     execute "res -1 | res +1"
 endfunction
-
-autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
-autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
