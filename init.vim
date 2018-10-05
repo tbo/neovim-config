@@ -30,17 +30,25 @@ Plug 'airblade/vim-rooter'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
-" Plug '/Users/tbo/git/LanguageClient-neovim'
+Plug '/Users/tbo/git/LanguageClient-neovim', { 
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh'
+    \}
 Plug 'autozimu/LanguageClient-neovim', { 
     \ 'branch': 'next',
     \ 'do': 'bash install.sh'
     \}
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'ncm2/ncm2'
+Plug 'roxma/nvim-yarp'
+Plug 'ncm2/ncm2-ultisnips'
+Plug 'ncm2/ncm2-bufword'
+Plug 'ncm2/ncm2-path'
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 Plug 'jparise/vim-graphql' 
-Plug 'styled-components/vim-styled-components', {'branch': 'main'}
+" Plug 'styled-components/vim-styled-components', {'branch': 'main'}
 
 " Helpers
 
@@ -99,6 +107,9 @@ set nolazyredraw
 " Show sign column by default
 set signcolumn=yes
 set updatetime=100
+" suppress the annoying 'match x of y', 'The only match' and 'Pattern not
+" found' messages
+set shortmess+=c
 " Increase terminal scroll back size
 let g:terminal_scrollback_buffer_size = 10000
 let g:startify_change_to_dir = 0
@@ -214,6 +225,7 @@ colorscheme gotham
 let g:enable_bold_font = 1
 let g:vebugger_use_tags = 1
 set completeopt-=preview
+set completeopt=noinsert,menuone,noselect
 
 " Leaving and entering terminal window
 autocmd BufWinEnter,WinEnter term://* startinsert
@@ -224,6 +236,8 @@ autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
 autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd! User FzfStatusLine setlocal statusline=\ 
+" enable ncm2 for all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
 
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
