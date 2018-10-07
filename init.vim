@@ -30,21 +30,22 @@ Plug 'airblade/vim-rooter'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
-Plug '/Users/tbo/git/LanguageClient-neovim', { 
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh'
-    \}
-Plug 'autozimu/LanguageClient-neovim', { 
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh'
-    \}
+" Plug '/Users/tbo/git/LanguageClient-neovim', { 
+"     \ 'branch': 'next',
+"     \ 'do': 'bash install.sh'
+"     \}
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+" Plug 'autozimu/LanguageClient-neovim', { 
+"     \ 'branch': 'next',
+"     \ 'do': 'bash install.sh'
+"     \}
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2-ultisnips'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-path'
+" Plug 'ncm2/ncm2'
+" Plug 'roxma/nvim-yarp'
+" Plug 'ncm2/ncm2-ultisnips'
+" Plug 'ncm2/ncm2-bufword'
+" Plug 'ncm2/ncm2-path'
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 Plug 'jparise/vim-graphql' 
@@ -179,11 +180,49 @@ tmap <silent> <F9> <C-\><C-n>:call DWM_New()<CR>
 
 map <Space> :GFiles<CR>
 nmap s :w<CR>
-nmap gh :call LanguageClient_textDocument_hover()<CR>
-nmap gd :call LanguageClient_textDocument_definition()<CR>
-nmap gn :call LanguageClient_textDocument_rename()<CR>
-nmap gr :call LanguageClient_textDocument_references()<CR>
-nmap gq :call LanguageClient#textDocument_codeAction()<CR>
+" nmap gh :call LanguageClient_textDocument_hover()<CR>
+" nmap gd :call LanguageClient_textDocument_definition()<CR>
+" nmap gn :call LanguageClient_textDocument_rename()<CR>
+" nmap gr :call LanguageClient_textDocument_references()<CR>
+" nmap gq :call LanguageClient#textDocument_codeAction()<CR>
+
+" Use K for show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Use `[c` and `]c` for navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+" Remap for rename current word
+nmap <silent> gn <Plug>(coc-rename)
+nmap <silent> ga <Plug>(coc-codeaction-selected)
+
+" Show signature help while editing
+autocmd CursorHoldI * silent! call CocAction('showSignatureHelp')
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use `:Format` for format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Use `:Fold` for fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
 nmap gu :GitGutterUndoHunk<CR>
 nmap <silent> <Esc> :noh<CR>
 
@@ -237,7 +276,7 @@ autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumbe
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd! User FzfStatusLine setlocal statusline=\ 
 " enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
+" autocmd BufEnter * call ncm2#enable_for_buffer()
 
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()

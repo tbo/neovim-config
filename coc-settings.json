@@ -1,0 +1,15 @@
+{
+    "languageserver": {
+        "java": {
+            "command": "javalsp",
+            "filetypes": ["java"],
+            "initializationOptions": {
+                "extendedClientCapabilities": {
+                    "classFileContentsSupport": true
+                }
+            },
+            "settings": {
+            }
+        }
+    }
+}
