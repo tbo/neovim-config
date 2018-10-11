@@ -14,7 +14,6 @@ Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'michaeljsmith/vim-indent-object'
-
 " User interface
 
 Plug 'spolu/dwm.vim'
@@ -59,6 +58,7 @@ Plug 'PeterRincker/vim-argumentative'
 " Color Themes
 Plug 'whatyouhide/vim-gotham'
 Plug 'ryanoasis/vim-devicons'
+" Plug 'brettanomyces/nvim-editcommand'
 
 call plug#end()
 
@@ -171,6 +171,7 @@ tmap <silent> <F7> <C-\><C-n>:exec DWM_Close()<CR>
 
 nmap <silent> <F10> :call DeleteWindow()<CR>
 tmap <silent> <F10> <C-\><C-n>:call DeleteWindow()<CR>
+tmap <c-x> <C-\><C-n>:terminal<CR>
 
 nmap <silent> <F8> :call DWM_New()<bar>:terminal<CR>
 tmap <silent> <F8> <C-\><C-n>:call DWM_New()<bar>:terminal<CR>
@@ -269,7 +270,7 @@ set completeopt=noinsert,menuone,noselect
 " Leaving and entering terminal window
 autocmd BufWinEnter,WinEnter term://* startinsert
 autocmd BufLeave term://* stopinsert
-autocmd BufAdd,BufEnter,BufDelete,TermOpen  * :call AddBuffer()
+autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
 autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
@@ -285,11 +286,11 @@ command! -bang -nargs=* LC execute "LanguageClientStop"|LanguageClientStart
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.rb''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
 
 function! s:getMruBuffers()
-    return filter(g:mruBuffers, 'bufexists(v:val)&&buflisted(v:val)')
+    return filter(g:mruBuffers, 'bufexists(v:val)&&buflisted(bufnr(v:val))')
 endfunction
 
 function! IsTerminalBuffer(name)
-    return len(a:name) > 6 && a:name[:6] == "term://"
+    return getbufvar(a:name, '&buftype') == 'terminal'
 endfunction
 
 function! s:getMruFileBuffers()
@@ -320,15 +321,13 @@ endfunction
 function! DeleteWindow()
     let currentBufferNr = bufnr('%')
     let currentBuffer = expand('%:p')
-    if currentBuffer[:6] == "term://"
+    let l:mruBuffers = s:getMruFileBuffers()
+    if len(l:mruBuffers) < 1
+        exec 'Startify'
+    elseif IsTerminalBuffer(currentBuffer)
         exec DWM_Close()
     else
-        let l:mruBuffers = s:getMruFileBuffers()
-        if len(l:mruBuffers) > 1
-            exec 'buffer '. l:mruBuffers[1]
-        else
-            exec 'Startify'
-        endif
+        exec 'buffer '. l:mruBuffers[1]
     endif
     exec 'silent! bd! ' . currentBufferNr
 endfunction
@@ -361,7 +360,8 @@ endfunction
 
 function! AddBuffer()
     let currentBuffer = expand('%:p')
-    let g:mruBuffers = filter(g:mruBuffers, 'currentBuffer!=v:val&&bufexists(v:val)&&buflisted(v:val)')
+
+    let g:mruBuffers = filter(g:mruBuffers, 'currentBuffer!=v:val&&bufexists(v:val)&&buflisted(bufnr(v:val))')
     if strlen(currentBuffer) > 0 && bufexists(currentBuffer)
         let g:mruBuffers = [currentBuffer] + g:mruBuffers
     endif
@@ -383,7 +383,7 @@ function! OpenBufferSelection()
         let files = files[1:] + [files[0]]
     endif
 
-    let terminals = map(filter(s:getMruTerminalBuffers(), 'bufwinnr(v:val) == -1'), 'buffer_number(v:val)."\t  ".split(getbufvar(v:val, "term_title"), ",")[0]')
+    let terminals = map(filter(s:getMruTerminalBuffers(), 'bufwinnr(buffer_number(v:val)) == -1'), 'buffer_number(v:val)."\t  ".split(getbufvar(v:val, "term_title"), ",")[0]')
     let common = s:getCommonPath(files)
     let commonLength = strlen(common) > 0 ? strlen(common) + 2 : 0
     let buffers = map(files, 'strpart(v:val, commonLength)') + terminals
