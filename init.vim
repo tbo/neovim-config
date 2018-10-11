@@ -14,6 +14,7 @@ Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'michaeljsmith/vim-indent-object'
+
 " User interface
 
 Plug 'spolu/dwm.vim'
@@ -420,3 +421,15 @@ set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{Git
 function! FixWindow()
     execute "res -1 | res +1"
 endfunction
+
+function! LoadJavaContent(uri)
+    echo 'URI jdt:/' + a:uri
+    setfiletype java
+    let content = CocRequest('java', 'java/classFileContents', {'uri': 'jdt:/' . a:uri})
+    call setline(1, split(content, "\n"))
+    setl nomod
+    setl readonly
+endfunction
+
+" au! BufReadPre,BufReadCmd,FileReadCmd,SourceCmd *.class call LoadJavaContent(expand("<amatch>"))<CR>
+autocmd! BufReadPre,BufReadCmd,FileReadCmd,SourceCmd *.class debug call LoadJavaContent(expand("<amatch>"))<CR>
