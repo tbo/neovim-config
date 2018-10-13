@@ -255,6 +255,14 @@ if (has("termguicolors") || has("vimr"))
  set termguicolors
 endif
 
+augroup inactive_win
+    au!
+    au ColorScheme * hi link MyInactiveWin ColorColumn | hi link MyNormalWin Normal
+    au FileType,BufWinEnter * set winhighlight=NormalNC:MyInactiveWin
+    au FocusGained * hi link MyNormalWin Normal
+    au FocusLost * hi link MyNormalWin MyInactiveWin
+augroup END
+
 autocmd ColorScheme * hi Comment gui=italic
 autocmd ColorScheme * hi VertSplit guibg=bg guifg=#091f2e
 autocmd ColorScheme * hi EndOfBuffer guifg=#0c1014
