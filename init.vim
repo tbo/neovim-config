@@ -423,13 +423,13 @@ function! FixWindow()
 endfunction
 
 function! LoadJavaContent(uri)
-    echo 'URI jdt:/' + a:uri
     setfiletype java
-    let content = CocRequest('java', 'java/classFileContents', {'uri': 'jdt:/' . a:uri})
+    let content = CocRequest('java', 'java/classFileContents', {'uri': a:uri})
     call setline(1, split(content, "\n"))
     setl nomod
     setl readonly
 endfunction
 
-" au! BufReadPre,BufReadCmd,FileReadCmd,SourceCmd *.class call LoadJavaContent(expand("<amatch>"))<CR>
-autocmd! BufReadPre,BufReadCmd,FileReadCmd,SourceCmd *.class debug call LoadJavaContent(expand("<amatch>"))<CR>
+autocmd! BufReadCmd,FileReadCmd,SourceCmd jdt://* call LoadJavaContent(expand("<amatch>"))
+let g:coc_force_debug = 1
+nmap ga  <Plug>(coc-codeaction)
