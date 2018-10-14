@@ -58,6 +58,7 @@ Plug 'PeterRincker/vim-argumentative'
 
 " Color Themes
 Plug 'whatyouhide/vim-gotham'
+Plug 'chriskempson/base16-vim'
 Plug 'ryanoasis/vim-devicons'
 " Plug 'brettanomyces/nvim-editcommand'
 
@@ -232,7 +233,7 @@ let g:deoplete#file#enable_buffer_path = 1
 let g:deoplete_ignore_sources = ['buffer', 'neco-syntax', 'cwd']
 let g:deoplete#enable_at_startup = 1
 
-set fillchars+=vert:│
+set fillchars+=vert:│,eob:\ 
 
 " better key bindings for UltiSnipsExpandTrigger
 let g:UltiSnipsExpandTrigger = "<tab>"
@@ -264,11 +265,11 @@ augroup inactive_win
 augroup END
 
 autocmd ColorScheme * hi Comment gui=italic
-autocmd ColorScheme * hi VertSplit guibg=bg guifg=#091f2e
-autocmd ColorScheme * hi EndOfBuffer guifg=#0c1014
+autocmd ColorScheme * hi VertSplit guibg=bg
+autocmd ColorScheme * hi TermCursorNC guibg=fg
+autocmd ColorScheme gotham hi VertSplit guibg=bg guifg=#091f2e
 " Unsetting the background color can have serious performance benefits
 autocmd ColorScheme * hi Normal guibg=None ctermbg=None
-autocmd ColorScheme * hi ALEError ctermfg=1 guifg=#c23127 gui=bold
 
 colorscheme gotham
 let g:enable_bold_font = 1
@@ -331,7 +332,7 @@ function! DeleteWindow()
     let currentBufferNr = bufnr('%')
     let currentBuffer = expand('%:p')
     let l:mruBuffers = s:getMruFileBuffers()
-    if len(l:mruBuffers) < 1
+    if len(l:mruBuffers) < 2
         exec 'Startify'
     elseif IsTerminalBuffer(currentBuffer)
         exec DWM_Close()
