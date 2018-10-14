@@ -288,7 +288,10 @@ autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd! User FzfStatusLine setlocal statusline=\ 
 " enable ncm2 for all buffers
 " autocmd BufEnter * call ncm2#enable_for_buffer()
-
+highlight link CocErrorSign ErrorMsg
+highlight link CocWarningSign NeoMakeWarning
+highlight link CocInfoSign StatusLine
+highlight link CocHintSign StatusLine
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')
@@ -442,4 +445,4 @@ endfunction
 
 autocmd! BufReadCmd,FileReadCmd,SourceCmd jdt://* call LoadJavaContent(expand("<amatch>"))
 let g:coc_force_debug = 1
-nmap ga  <Plug>(coc-codeaction)
+nmap gac  <Plug>(coc-codeaction)

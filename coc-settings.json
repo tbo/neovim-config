@@ -10,6 +10,16 @@
             },
             "settings": {
             }
+        },
+        "rls": {
+            "command": "rustup",
+            "args": ["run", "stable", "rls"],
+            "filetypes": ["rust"],
+            "settings": {}
         }
-    }
+    },
+    "coc.preferences.diagnostic.errorSign": "",
+    "coc.preferences.diagnostic.warningSign": "",
+    "coc.preferences.diagnostic.infoSign": "",
+    "coc.preferences.diagnostic.hintSign": ""
 }
