@@ -227,7 +227,7 @@ augroup END
 autocmd ColorScheme * hi Comment gui=italic
 autocmd ColorScheme * hi VertSplit guibg=bg
 autocmd ColorScheme * hi TermCursorNC guibg=fg
-autocmd ColorScheme gotham hi VertSplit guibg=bg guifg=#091f2e
+autocmd ColorScheme gotham hi VertSplit guibg=black guifg=#091f2e
 " Unsetting the background color can have serious performance benefits
 autocmd ColorScheme * hi Normal guibg=None ctermbg=None
 
@@ -291,13 +291,14 @@ endfunction
 function! DeleteWindow()
     let currentBufferNr = bufnr('%')
     let currentBuffer = expand('%:p')
-    let l:mruBuffers = s:getMruFileBuffers()
-    if len(l:mruBuffers) < 2
-        exec 'Startify'
-    elseif IsTerminalBuffer(currentBuffer)
+    let l:mruBuffers = s:getMruBuffers()
+    let l:mruFileBuffers = s:getMruFileBuffers()
+    if IsTerminalBuffer(currentBuffer) || len(s:getFileWindows()) > 1
         exec DWM_Close()
-    else
+    elseif len(l:mruFileBuffers) > 1
         exec 'buffer '. l:mruBuffers[1]
+    else 
+        exec 'Startify'
     endif
     exec 'silent! bd! ' . currentBufferNr
 endfunction
