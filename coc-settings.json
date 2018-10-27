@@ -1,23 +1,14 @@
 {
     "languageserver": {
-        "java": {
-            "command": "javalsp",
-            "filetypes": ["java"],
-            "initializationOptions": {
-                "extendedClientCapabilities": {
-                    "classFileContentsSupport": true
-                }
-            },
-            "settings": {
-            }
-        },
         "rls": {
             "command": "rustup",
             "args": ["run", "stable", "rls"],
             "filetypes": ["rust"],
-            "settings": {}
+            "settings": {},
+            "trace.server": "verbose"
         }
     },
+    "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home",
     "coc.preferences.diagnostic.errorSign": "",
     "coc.preferences.diagnostic.warningSign": "",
     "coc.preferences.diagnostic.infoSign": "",

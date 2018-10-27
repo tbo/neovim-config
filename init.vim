@@ -26,30 +26,15 @@ Plug 'airblade/vim-rooter'
 
 " Syntax & completion
 
-" Plug 'w0rp/ale'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
-" Plug '/Users/tbo/git/LanguageClient-neovim', { 
-"     \ 'branch': 'next',
-"     \ 'do': 'bash install.sh'
-"     \}
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-" Plug 'autozimu/LanguageClient-neovim', { 
-"     \ 'branch': 'next',
-"     \ 'do': 'bash install.sh'
-"     \}
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'ncm2/ncm2'
-" Plug 'roxma/nvim-yarp'
-" Plug 'ncm2/ncm2-ultisnips'
-" Plug 'ncm2/ncm2-bufword'
-" Plug 'ncm2/ncm2-path'
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 Plug 'jparise/vim-graphql' 
-" Plug 'styled-components/vim-styled-components', {'branch': 'main'}
+Plug 'styled-components/vim-styled-components', {'branch': 'main'}
 
 " Helpers
 
@@ -60,7 +45,6 @@ Plug 'PeterRincker/vim-argumentative'
 Plug 'whatyouhide/vim-gotham'
 Plug 'chriskempson/base16-vim'
 Plug 'ryanoasis/vim-devicons'
-" Plug 'brettanomyces/nvim-editcommand'
 
 call plug#end()
 
@@ -95,9 +79,9 @@ set mouse-=a
 set scrolloff=9999
 " Do not wrap lines
 set nowrap
-" No syntax highlighting beyond 256 columns
-set synmaxcol=240
-syntax sync minlines=240
+" No syntax highlighting beyond 500 columns
+set synmaxcol=500
+syntax sync minlines=500
 " Highlight trailing whitespace
 set listchars=tab:\ \ ,trail:·
 set list
@@ -113,29 +97,11 @@ set updatetime=100
 " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
 " found' messages
 set shortmess+=c
+let g:coc_auto_copen = 0
 " Increase terminal scroll back size
 let g:terminal_scrollback_buffer_size = 10000
 let g:startify_change_to_dir = 0
 syntax enable
-
-let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['tslsp'],
-    \ 'typescript': ['tslsp'],
-    \ 'typescript.jsx': ['tslsp'],
-    \ 'javascript.jsx': ['tslsp'],
-    \ 'python': ['pyls'],
-    \ 'rust': ['rustup', 'run', 'stable', 'rls'],
-    \ 'go': ['~/go/bin/go-langserver'],
-    \ 'java': ['~/bin/javalsp'],
-\ }
-"
-" Automatically start language servers.
-let g:LanguageClient_windowLogMessageLevel = 'Error'
-let g:LanguageClient_settingsPath = '/Users/tbo/.config/nvim/settings.json'
-
-let g:LanguageClient_loggingFile = '/Users/tbo/logs/LanguageClient.log'
-let g:LanguageClient_loggingLevel = 'DEBUG'
-let g:LanguageClient_autoStart = 1
 
 " Key bindings
 nmap ; :
@@ -145,6 +111,7 @@ map f :MyBuffers<CR>
 autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
 autocmd TermOpen term://* tmap <buffer> <ESC> <C-\><C-n>
 autocmd TermOpen term://* tnoremap <buffer> <ESC-e> <nop>
+autocmd User CocQuickfixChange :call fzf_quickfix#run()
 
 nmap <silent> <D-j> <C-W>w
 nmap <silent> <F2> <C-W>w
@@ -183,12 +150,7 @@ tmap <silent> <F9> <C-\><C-n>:call DWM_New()<CR>
 
 map <Space> :GFiles<CR>
 nmap s :w<CR>
-" nmap gh :call LanguageClient_textDocument_hover()<CR>
-" nmap gd :call LanguageClient_textDocument_definition()<CR>
-" nmap gn :call LanguageClient_textDocument_rename()<CR>
-" nmap gr :call LanguageClient_textDocument_references()<CR>
-" nmap gq :call LanguageClient#textDocument_codeAction()<CR>
-
+"
 " Use K for show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -219,10 +181,19 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gq  <Plug>(coc-codeaction)
 
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
 " Use `:Format` for format current buffer
 command! -nargs=0 Format :call CocAction('format')
 
+" Remap for format selected region
+vmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+vmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
 " Use `:Fold` for fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
@@ -336,7 +307,7 @@ function! DeleteWindow()
     let currentBuffer = expand('%:p')
     let l:mruBuffers = s:getMruBuffers()
     let l:mruFileBuffers = s:getMruFileBuffers()
-    if IsTerminalBuffer(currentBuffer) || len(s:getFileWindows()) > 1
+    if IsTerminalBuffer(currentBuffer) || getbufvar(currentBuffer, '&buftype') == 'nofile' || len(s:getFileWindows()) < 2
         exec DWM_Close()
     elseif len(l:mruFileBuffers) > 1
         exec 'buffer '. l:mruBuffers[1]
@@ -435,14 +406,5 @@ function! FixWindow()
     execute "res -1 | res +1"
 endfunction
 
-function! LoadJavaContent(uri)
-    setfiletype java
-    let content = CocRequest('java', 'java/classFileContents', {'uri': a:uri})
-    call setline(1, split(content, "\n"))
-    setl nomod
-    setl readonly
-endfunction
-
-autocmd! BufReadCmd,FileReadCmd,SourceCmd jdt://* call LoadJavaContent(expand("<amatch>"))
 let g:coc_force_debug = 1
-nmap gac  <Plug>(coc-codeaction)
+nmap ga  <Plug>(coc-codeaction)
