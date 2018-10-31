@@ -1,12 +1,5 @@
 {
     "languageserver": {
-        "rls": {
-            "command": "rustup",
-            "args": ["run", "stable", "rls"],
-            "filetypes": ["rust"],
-            "settings": {},
-            "trace.server": "verbose"
-        }
     },
     "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home",
     "coc.preferences.diagnostic.errorSign": "",

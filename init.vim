@@ -34,7 +34,7 @@ Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 Plug 'jparise/vim-graphql' 
-Plug 'styled-components/vim-styled-components', {'branch': 'main'}
+" Plug 'styled-components/vim-styled-components', {'branch': 'main'}
 
 " Helpers
 
@@ -150,7 +150,9 @@ tmap <silent> <F9> <C-\><C-n>:call DWM_New()<CR>
 
 map <Space> :GFiles<CR>
 nmap s :w<CR>
-"
+nnoremap gk <C-i>
+nnoremap gj <C-O>
+
 " Use K for show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -260,9 +262,9 @@ autocmd! User FzfStatusLine setlocal statusline=\
 " enable ncm2 for all buffers
 " autocmd BufEnter * call ncm2#enable_for_buffer()
 highlight link CocErrorSign ErrorMsg
-highlight link CocWarningSign NeoMakeWarning
+highlight link CocWarningSign NeoMakeWarningSign
 highlight link CocInfoSign StatusLine
-highlight link CocHintSign StatusLine
+highlight link CocHintSign vimTodo
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')
@@ -406,5 +408,5 @@ function! FixWindow()
     execute "res -1 | res +1"
 endfunction
 
-let g:coc_force_debug = 1
+" let g:coc_force_debug = 1
 nmap ga  <Plug>(coc-codeaction)
