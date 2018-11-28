@@ -1,6 +1,7 @@
 let g:dwm_map_keys = 0
 let g:mruBuffers = get(g:, 'mruBuffers', [])
 let g:fzf_buffers_jump = 1
+let g:python3_host_prog = '/Users/tbo/.pyenv/versions/py3neovim/bin/python'
 autocmd!
 call plug#begin('~/.nvim/plugged')
 
@@ -35,7 +36,8 @@ Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 Plug 'jparise/vim-graphql' 
 " Plug 'styled-components/vim-styled-components', {'branch': 'main'}
-
+"
+Plug 'artur-shaik/vim-javacomplete2'
 " Helpers
 
 Plug 'simnalamburt/vim-mundo'
@@ -49,7 +51,7 @@ Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
 " Options
-
+let g:markdown_fenced_languages = ['java', 'javascript', 'javascript.jsx', 'typescript', 'typescript.jsx']
 " Indent defaults
 set shiftwidth=4
 set tabstop=4
@@ -97,6 +99,10 @@ set updatetime=100
 " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
 " found' messages
 set shortmess+=c
+set concealcursor=
+set conceallevel=2
+set noautoread
+
 let g:coc_auto_copen = 0
 " Increase terminal scroll back size
 let g:terminal_scrollback_buffer_size = 10000
@@ -191,11 +197,13 @@ nmap <silent> ]c <Plug>(coc-diagnostic-next)
 command! -nargs=0 Format :call CocAction('format')
 
 " Remap for format selected region
-vmap <leader>f  <Plug>(coc-format-selected)
+vmap f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
 vmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
+vmap ga :CocCommand<CR>
+nmap ga  <Plug>(coc-codeaction)
 " Use `:Fold` for fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
@@ -241,8 +249,9 @@ autocmd ColorScheme * hi Comment gui=italic
 autocmd ColorScheme * hi VertSplit guibg=bg
 autocmd ColorScheme * hi TermCursorNC guibg=fg
 autocmd ColorScheme gotham hi VertSplit guibg=black guifg=#091f2e
+autocmd ColorScheme gotham hi clear Conceal 
 " Unsetting the background color can have serious performance benefits
-autocmd ColorScheme * hi Normal guibg=None ctermbg=None
+autocmd ColorScheme gotham hi Normal guibg=None ctermbg=None
 
 colorscheme gotham
 let g:enable_bold_font = 1
@@ -252,19 +261,21 @@ set completeopt=noinsert,menuone,noselect
 
 " Leaving and entering terminal window
 autocmd BufWinEnter,WinEnter term://* startinsert
+" autocmd TermOpen,WinEnter,BufWinEnter,BufEnter,BufAdd,BufEnter * :call SetLigatures()
+" autocmd BufAdd * :call SetLigatures()
 autocmd BufLeave term://* stopinsert
 autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
-autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999
-autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
+autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999 conceallevel=2
+autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd! User FzfStatusLine setlocal statusline=\ 
 " enable ncm2 for all buffers
 " autocmd BufEnter * call ncm2#enable_for_buffer()
 highlight link CocErrorSign ErrorMsg
 highlight link CocWarningSign NeoMakeWarningSign
-highlight link CocInfoSign StatusLine
-highlight link CocHintSign vimTodo
+highlight link CocInfoSign CursorColumn
+highlight link CocHintSign CursorColumn
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')
@@ -309,10 +320,10 @@ function! DeleteWindow()
     let currentBuffer = expand('%:p')
     let l:mruBuffers = s:getMruBuffers()
     let l:mruFileBuffers = s:getMruFileBuffers()
-    if IsTerminalBuffer(currentBuffer) || getbufvar(currentBuffer, '&buftype') == 'nofile' || len(s:getFileWindows()) < 2
+    if IsTerminalBuffer(currentBuffer) || getbufvar(currentBuffer, '&buftype') == 'nofile' || len(s:getFileWindows()) > 1
         exec DWM_Close()
     elseif len(l:mruFileBuffers) > 1
-        exec 'buffer '. l:mruBuffers[1]
+        exec 'buffer '. l:mruFileBuffers[1]
     else 
         exec 'Startify'
     endif
@@ -407,6 +418,12 @@ set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{Git
 function! FixWindow()
     execute "res -1 | res +1"
 endfunction
-" if IsTerminalBuffer(currentBuffer) || getbufvar(currentBuffer, '&buftype') == 'nofile' || len(s:getFileWindows()) < 2
+syntax match jsArrowFunction "=>" conceal cchar=⇒
+function! SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+map gu :call SynStack()<CR>
 " let g:coc_force_debug = 1
-nmap ga  <Plug>(coc-codeaction)
