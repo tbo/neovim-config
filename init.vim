@@ -31,7 +31,6 @@ Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 Plug 'jparise/vim-graphql' 
@@ -51,7 +50,6 @@ Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
 " Options
-let g:markdown_fenced_languages = ['java', 'javascript', 'javascript.jsx', 'typescript', 'typescript.jsx']
 " Indent defaults
 set shiftwidth=4
 set tabstop=4
@@ -261,8 +259,6 @@ set completeopt=noinsert,menuone,noselect
 
 " Leaving and entering terminal window
 autocmd BufWinEnter,WinEnter term://* startinsert
-" autocmd TermOpen,WinEnter,BufWinEnter,BufEnter,BufAdd,BufEnter * :call SetLigatures()
-" autocmd BufAdd * :call SetLigatures()
 autocmd BufLeave term://* stopinsert
 autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
@@ -270,8 +266,6 @@ autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999 conceallevel=2
 autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd! User FzfStatusLine setlocal statusline=\ 
-" enable ncm2 for all buffers
-" autocmd BufEnter * call ncm2#enable_for_buffer()
 highlight link CocErrorSign ErrorMsg
 highlight link CocWarningSign NeoMakeWarningSign
 highlight link CocInfoSign CursorColumn
