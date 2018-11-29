@@ -43,7 +43,6 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'PeterRincker/vim-argumentative'
 
 " Color Themes
-Plug 'whatyouhide/vim-gotham'
 Plug 'chriskempson/base16-vim'
 Plug 'ryanoasis/vim-devicons'
 
@@ -127,7 +126,6 @@ nmap <silent> <F3> <C-W>W
 tmap <silent> <D-k> <C-\><C-n><C-W>W
 tmap <silent> <F3> <C-\><C-n><C-W>W
 
-nmap <silent> <F12> :silent !curl -X POST localhost:8080/actuator/restart<CR>
 nmap <silent> <D-Enter> :call DWM_Focus()<CR>
 nmap <silent> <F4> :call DWM_Focus()<CR>
 tmap <silent> <D-Enter> <C-\><C-n>:call DWM_Focus()<CR>
@@ -246,10 +244,6 @@ augroup END
 autocmd ColorScheme * hi Comment gui=italic
 autocmd ColorScheme * hi VertSplit guibg=bg
 autocmd ColorScheme * hi TermCursorNC guibg=fg
-autocmd ColorScheme gotham hi VertSplit guibg=black guifg=#091f2e
-autocmd ColorScheme gotham hi clear Conceal 
-" Unsetting the background color can have serious performance benefits
-autocmd ColorScheme gotham hi Normal guibg=None ctermbg=None
 
 colorscheme gotham
 let g:enable_bold_font = 1
@@ -267,7 +261,7 @@ autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= concealle
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd! User FzfStatusLine setlocal statusline=\ 
 highlight link CocErrorSign ErrorMsg
-highlight link CocWarningSign NeoMakeWarningSign
+highlight link CocWarningSign WarningMsg
 highlight link CocInfoSign CursorColumn
 highlight link CocHintSign CursorColumn
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
