@@ -1,6 +1,8 @@
 let g:dwm_map_keys = 0
 let g:mruBuffers = get(g:, 'mruBuffers', [])
 let g:fzf_buffers_jump = 1
+let g:sneak#label = 1
+" let g:sneak#streak = 1
 let g:python3_host_prog = '/Users/tbo/.pyenv/versions/py3neovim/bin/python'
 autocmd!
 call plug#begin('~/.nvim/plugged')
@@ -13,7 +15,7 @@ Plug 'tpope/vim-sensible'
 
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
-Plug 'Lokaltog/vim-easymotion'
+Plug 'justinmk/vim-sneak'
 Plug 'michaeljsmith/vim-indent-object'
 
 " User interface
@@ -31,6 +33,7 @@ Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 Plug 'jparise/vim-graphql' 
@@ -92,13 +95,16 @@ set noshowmode
 set nolazyredraw
 " Show sign column by default
 set signcolumn=yes
-set updatetime=100
+set updatetime=120
 " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
 " found' messages
 set shortmess+=c
 set concealcursor=
 set conceallevel=2
 set noautoread
+
+let g:matchparen_timeout = 10
+let g:matchparen_insert_timeout = 10
 
 let g:coc_auto_copen = 0
 " Increase terminal scroll back size
@@ -156,7 +162,7 @@ nnoremap gk <C-i>
 nnoremap gj <C-O>
 
 " Use K for show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+" nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
   if &filetype == 'vim'
@@ -165,6 +171,10 @@ function! s:show_documentation()
     call CocAction('doHover')
   endif
 endfunction
+
+nmap U :join<CR>
+nmap J <C-D>
+nmap K <C-U>
 
 " Use `[c` and `]c` for navigate diagnostics
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
@@ -219,7 +229,8 @@ let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 let g:UltiSnipsSnippetDirectories = ['~/.config/nvim/ultisnips', 'UltiSnips']
 
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
-nmap c <Plug>(easymotion-s)
+nmap c <Plug>Sneak_s
+nmap C <Plug>Sneak_S
 let g:EasyMotion_smartcase = 1
 
 let g:gitgutter_sign_added = '│'
@@ -242,7 +253,6 @@ augroup inactive_win
 augroup END
 
 autocmd ColorScheme * hi Comment gui=italic
-autocmd ColorScheme * hi VertSplit guibg=bg
 autocmd ColorScheme * hi TermCursorNC guibg=fg
 
 colorscheme gotham
@@ -257,13 +267,9 @@ autocmd BufLeave term://* stopinsert
 autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999 conceallevel=2
-autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(60, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
+autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(300, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 autocmd! User FzfStatusLine setlocal statusline=\ 
-highlight link CocErrorSign ErrorMsg
-highlight link CocWarningSign WarningMsg
-highlight link CocInfoSign CursorColumn
-highlight link CocHintSign CursorColumn
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')

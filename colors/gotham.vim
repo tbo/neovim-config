@@ -45,7 +45,7 @@ function! s:Col(group, fg_name, ...)
   endif
 
   if a:0 > 0 && a:1 !=# ''
-    let pieces = s:AddGroundValues(pieces, 'bg', s:colors[a:1])
+    let pieces = s:AddGroundValues(pieces, 'bg', get(s:colors, a:1, a:1))
   endif
 
   call s:Clear(a:group)
@@ -76,6 +76,7 @@ let s:colors.base4 = { 'gui': '#1e6479', 'cterm': 11 }
 let s:colors.base5 = { 'gui': '#599cab', 'cterm': 14 }
 let s:colors.base6 = { 'gui': '#99d1ce', 'cterm': 7 }
 let s:colors.base7 = { 'gui': '#d3ebe9', 'cterm': 15 }
+let s:colors.base8 = { 'gui': '#000000', 'cterm': 0 }
 
 " Other colors.
 let s:colors.red     = { 'gui': '#c23127', 'cterm': 1  }
@@ -162,11 +163,11 @@ call s:Col('Conceal', 'base6', s:background)
 call s:Col('Todo', 'magenta', s:background)
 
 " The column separating vertical splits.
-call s:Col('VertSplit', 'base2', 'base0')
+call s:Col('VertSplit', 'base2', 'base8')
 call s:Col('StatusLineNC', 'blue', 'base2')
 
 " Matching parenthesis.
-call s:Col('MatchParen', 'red', 'base0')
+call s:Col('MatchParen', 'yellow', 'base0')
 call s:Attr('MatchParen', 'bold')
 
 " Special keys, e.g. some of the chars in 'listchars'. See ':h listchars'.
@@ -247,6 +248,17 @@ call s:Col('GitGutterAdd', 'green', s:linenr_background)
 call s:Col('GitGutterChange', 'cyan', s:linenr_background)
 call s:Col('GitGutterDelete', 'orange', s:linenr_background)
 call s:Col('GitGutterChangeDelete', 'magenta', s:linenr_background)
+
+" coc.nvim
+call s:Col('CocErrorSign', 'red', s:linenr_background)
+call s:Col('CocWarningSign', 'yellow', s:linenr_background)
+call s:Col('CocInfoSign', 'blue', s:linenr_background)
+call s:Col('CocHintSign', 'cyan', s:linenr_background)
+
+call s:Col('Sneak', 'red', 'base0')
+call s:Col('SneakScope', 'red', 'base0')
+call s:Col('SneakLabel', 'red', 'base0')
+call s:Attr('SneakLabel', 'underline')
 
 " Cleanup =====================================================================
 
