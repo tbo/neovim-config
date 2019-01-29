@@ -2,9 +2,11 @@ let g:dwm_map_keys = 0
 let g:mruBuffers = get(g:, 'mruBuffers', [])
 let g:fzf_buffers_jump = 1
 let g:sneak#label = 1
+let g:coc_enable_locationlist = 0
 " let g:sneak#streak = 1
 let g:python3_host_prog = '/Users/tbo/.pyenv/versions/py3neovim/bin/python'
 autocmd!
+autocmd User CocLocationsChange CocList --normal location
 call plug#begin('~/.nvim/plugged')
 
 " Defaults defined by tpope
@@ -46,9 +48,7 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'PeterRincker/vim-argumentative'
 
 " Color Themes
-Plug 'chriskempson/base16-vim'
 Plug 'ryanoasis/vim-devicons'
-
 call plug#end()
 
 " Options
@@ -81,9 +81,9 @@ set mouse-=a
 set scrolloff=9999
 " Do not wrap lines
 set nowrap
-" No syntax highlighting beyond 500 columns
-set synmaxcol=500
-syntax sync minlines=500
+" No syntax highlighting beyond 3000 columns
+set synmaxcol=3000
+syntax sync minlines=3000
 " Highlight trailing whitespace
 set listchars=tab:\ \ ,trail:·
 set list
@@ -103,6 +103,7 @@ set concealcursor=
 set conceallevel=2
 set noautoread
 
+
 let g:matchparen_timeout = 10
 let g:matchparen_insert_timeout = 10
 
@@ -115,6 +116,9 @@ syntax enable
 " Key bindings
 nmap ; :
 map f :MyBuffers<CR>
+
+" Avoids syntax issues
+autocmd BufEnter * :syntax sync fromstart
 
 " Use ESC to switch to normal mode in terminals except in fzf
 autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
@@ -254,6 +258,7 @@ augroup END
 
 autocmd ColorScheme * hi Comment gui=italic
 autocmd ColorScheme * hi TermCursorNC guibg=fg
+autocmd ColorScheme * hi CocUnderline cterm=undercurl gui=undercurl
 
 colorscheme gotham
 let g:enable_bold_font = 1
