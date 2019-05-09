@@ -1,9 +1,7 @@
 let g:dwm_map_keys = 0
 let g:mruBuffers = get(g:, 'mruBuffers', [])
 let g:fzf_buffers_jump = 1
-let g:sneak#label = 1
 let g:coc_enable_locationlist = 0
-" let g:sneak#streak = 1
 let g:python3_host_prog = '/Users/tbo/.pyenv/versions/py3neovim/bin/python'
 autocmd!
 autocmd User CocLocationsChange CocList --normal location
@@ -17,7 +15,6 @@ Plug 'tpope/vim-sensible'
 
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-scripts/fugitive.vim'
-Plug 'justinmk/vim-sneak'
 Plug 'michaeljsmith/vim-indent-object'
 
 " User interface
@@ -34,14 +31,13 @@ Plug 'airblade/vim-rooter'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
+Plug 'ron-rs/ron.vim'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
+Plug 'alx741/vim-rustfmt'
 
 Plug 'jparise/vim-graphql' 
 " Plug 'styled-components/vim-styled-components', {'branch': 'main'}
 "
-Plug 'artur-shaik/vim-javacomplete2'
 " Helpers
 
 Plug 'simnalamburt/vim-mundo'
@@ -49,6 +45,7 @@ Plug 'PeterRincker/vim-argumentative'
 
 " Color Themes
 Plug 'ryanoasis/vim-devicons'
+Plug 'tbo/notion'
 call plug#end()
 
 " Options
@@ -85,7 +82,7 @@ set nowrap
 set synmaxcol=3000
 syntax sync minlines=3000
 " Highlight trailing whitespace
-set listchars=tab:\ \ ,trail:·
+set listchars=tab:\ \ ,trail:·,extends:…,precedes:…
 set list
 " Share clipboard between vim and mac
 set clipboard=unnamed
@@ -172,7 +169,7 @@ function! s:show_documentation()
   if &filetype == 'vim'
     execute 'h '.expand('<cword>')
   else
-    call CocAction('doHover')
+    call CocActionAsync('doHover')
   endif
 endfunction
 
@@ -189,10 +186,18 @@ nmap <silent> gn <Plug>(coc-rename)
 nmap <silent> ga <Plug>(coc-codeaction-selected)
 
 " Show signature help while editing
-autocmd CursorHoldI * silent! call CocAction('showSignatureHelp')
+autocmd CursorHoldI * silent! call CocActionAsync('showSignatureHelp')
 
 " Highlight symbol under cursor on CursorHold
 autocmd CursorHold * silent call CocActionAsync('highlight')
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocActionAsync('formatSelected')
+  " Update signature help on jump placeholder
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -204,7 +209,7 @@ nmap <silent> gq  <Plug>(coc-codeaction)
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
 " Use `:Format` for format current buffer
-command! -nargs=0 Format :call CocAction('format')
+command! -nargs=0 Format :call CocActionAsync('format')
 
 " Remap for format selected region
 vmap f  <Plug>(coc-format-selected)
@@ -215,14 +220,10 @@ nmap <leader>a  <Plug>(coc-codeaction-selected)
 vmap ga :CocCommand<CR>
 nmap ga  <Plug>(coc-codeaction)
 " Use `:Fold` for fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
 
 nmap gu :GitGutterUndoHunk<CR>
 nmap <silent> <Esc> :noh<CR>
-
-let g:deoplete#file#enable_buffer_path = 1
-let g:deoplete_ignore_sources = ['buffer', 'neco-syntax', 'cwd']
-let g:deoplete#enable_at_startup = 1
 
 set fillchars+=vert:│,eob:\ 
 
@@ -232,9 +233,7 @@ let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 let g:UltiSnipsSnippetDirectories = ['~/.config/nvim/ultisnips', 'UltiSnips']
 
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-nmap c <Plug>Sneak_s
-nmap C <Plug>Sneak_S
+nmap <silent> c :NotionJump<CR>
 let g:EasyMotion_smartcase = 1
 
 let g:gitgutter_sign_added = '│'
@@ -267,8 +266,8 @@ set completeopt-=preview
 set completeopt=noinsert,menuone,noselect
 
 " Leaving and entering terminal window
-autocmd BufWinEnter,WinEnter term://* startinsert
 autocmd BufLeave term://* stopinsert
+autocmd BufEnter term://* startinsert
 autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999 conceallevel=2
@@ -426,3 +425,8 @@ function! SynStack()
 endfunc
 map gu :call SynStack()<CR>
 " let g:coc_force_debug = 1
+lua << EOF
+abc = function(g)
+    vim.api.nvim_command("echo 'hello world'")
+end
+EOF

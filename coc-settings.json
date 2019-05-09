@@ -7,5 +7,8 @@
     "coc.preferences.diagnostic.infoSign": "",
     "coc.preferences.diagnostic.hintSign": "",
     "java.format.onType.enabled": false,
-    "coc.preferences.fixInsertedWord": false
+    "coc.preferences.fixInsertedWord": false,
+    "java.errors.incompleteClasspath.severity": "ignore",
+    "rust-client.channel": "stable",
+    "coc.preferences.formatOnSaveFiletypes": ["css", "Markdown", "typescript", "typescript.jsx", "javascript", "javascript.jsx"],
 }

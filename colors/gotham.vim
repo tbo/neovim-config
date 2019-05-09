@@ -260,6 +260,8 @@ call s:Col('SneakScope', 'red', 'base0')
 call s:Col('SneakLabel', 'red', 'base0')
 call s:Attr('SneakLabel', 'underline')
 
+call s:Col('NotionLabel', 'red', 'base0')
+call s:Attr('NotionLabel', 'bold')
 " Cleanup =====================================================================
 
 unlet s:colors
