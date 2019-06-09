@@ -25,6 +25,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
+Plug 'tbo/notion'
 
 " Syntax & completion
 
@@ -33,10 +34,9 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'ron-rs/ron.vim'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-Plug 'alx741/vim-rustfmt'
 
 Plug 'jparise/vim-graphql' 
-" Plug 'styled-components/vim-styled-components', {'branch': 'main'}
+Plug 'styled-components/vim-styled-components', {'branch': 'main'}
 "
 " Helpers
 
@@ -45,14 +45,14 @@ Plug 'PeterRincker/vim-argumentative'
 
 " Color Themes
 Plug 'ryanoasis/vim-devicons'
-Plug 'tbo/notion'
+Plug 'chriskempson/base16-vim'
 call plug#end()
 
 " Options
 " Indent defaults
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
 set expandtab
 " Highlights current line
 set cursorline
@@ -91,7 +91,7 @@ set noshowcmd
 set noshowmode
 set nolazyredraw
 " Show sign column by default
-set signcolumn=yes
+set signcolumn=yes:2
 set updatetime=120
 " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
 " found' messages
@@ -99,7 +99,6 @@ set shortmess+=c
 set concealcursor=
 set conceallevel=2
 set noautoread
-
 
 let g:matchparen_timeout = 10
 let g:matchparen_insert_timeout = 10
@@ -116,6 +115,7 @@ map f :MyBuffers<CR>
 
 " Avoids syntax issues
 autocmd BufEnter * :syntax sync fromstart
+" autocmd BufWritePost *.rs :silent execute "r !rustfmt %"
 
 " Use ESC to switch to normal mode in terminals except in fzf
 autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
@@ -272,7 +272,7 @@ autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999 conceallevel=2
 autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(300, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
-autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
+autocmd BufNewFile,BufRead *.jscad set filetype=javascript
 autocmd! User FzfStatusLine setlocal statusline=\ 
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
