@@ -14,13 +14,12 @@ Plug 'tpope/vim-sensible'
 " General Purpose
 
 Plug 'tomtom/tcomment_vim'
-Plug 'vim-scripts/fugitive.vim'
+" Plug 'vim-scripts/fugitive.vim'
 Plug 'michaeljsmith/vim-indent-object'
 
 " User interface
 
 Plug 'spolu/dwm.vim'
-Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
@@ -29,12 +28,9 @@ Plug 'tbo/notion'
 
 " Syntax & completion
 
-Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'ron-rs/ron.vim'
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-
 Plug 'jparise/vim-graphql' 
 Plug 'styled-components/vim-styled-components', {'branch': 'main'}
 "
@@ -46,6 +42,22 @@ Plug 'PeterRincker/vim-argumentative'
 " Color Themes
 Plug 'ryanoasis/vim-devicons'
 Plug 'chriskempson/base16-vim'
+
+" COC
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'neoclide/coc-jest', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-rls', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-git', {'do': 'yarn install --frozen-lockfile'}
 call plug#end()
 
 " Options
@@ -222,26 +234,12 @@ nmap ga  <Plug>(coc-codeaction)
 " Use `:Fold` for fold current buffer
 command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
 
-nmap gu :GitGutterUndoHunk<CR>
+nmap gu :CocCommand git.chunkUndo<CR>
 nmap <silent> <Esc> :noh<CR>
 
 set fillchars+=vert:│,eob:\ 
 
-" better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-let g:UltiSnipsSnippetDirectories = ['~/.config/nvim/ultisnips', 'UltiSnips']
-
 nmap <silent> c :NotionJump<CR>
-let g:EasyMotion_smartcase = 1
-
-let g:gitgutter_sign_added = '│'
-let g:gitgutter_sign_modified = '│'
-let g:gitgutter_sign_removed = '│'
-let g:gitgutter_sign_removed_first_line = '│'
-let g:gitgutter_sign_modified_removed = '│'
-let g:gitgutter_map_keys = 0
 
 if (has("termguicolors") || has("vimr"))
  set termguicolors
@@ -271,7 +269,7 @@ autocmd BufEnter term://* startinsert
 autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999 conceallevel=2
-autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(300, 'RedrawStatusline', {'repeat': -1}) | call FixWindow()
+autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(300, 'RedrawStatusline', {'repeat': -1}) " | call FixWindow()
 autocmd BufNewFile,BufRead *.jscad set filetype=javascript
 autocmd! User FzfStatusLine setlocal statusline=\ 
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
@@ -406,27 +404,26 @@ function! GitInfo()
         endif
         let git = title[-1]
     else
-        let git = fugitive#head()
+        let git = get(g:,'coc_git_status','')
     endif
     return git != '' ? ' '.git : ''
 endfunction
 
 set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}
 
-function! FixWindow()
-    execute "res -1 | res +1"
-endfunction
-syntax match jsArrowFunction "=>" conceal cchar=⇒
-function! SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
-map gu :call SynStack()<CR>
-" let g:coc_force_debug = 1
-lua << EOF
-abc = function(g)
-    vim.api.nvim_command("echo 'hello world'")
-end
-EOF
+" function! FixWindow()
+"     execute "res -1 | res +1"
+" endfunction
+" syntax match jsArrowFunction "=>" conceal cchar=⇒
+" function! SynStack()
+"   if !exists("*synstack")
+"     return
+"   endif
+"   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+" endfunc
+" map gu :call SynStack()<CR>
+" lua << EOF
+" abc = function(g)
+"     vim.api.nvim_command("echo 'hello world'")
+" end
+" EOF

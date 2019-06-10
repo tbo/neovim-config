@@ -183,9 +183,9 @@ call s:Attr('IncSearch', 'reverse')
 
 " Popup menu.
 call s:Col('Pmenu', 'base6', 'base2')
-call s:Col('PmenuSel', 'base7', 'blue')
+call s:Col('PmenuSel', 'base7', 'base2')
 call s:Col('PmenuSbar', '', 'base2')
-call s:Col('PmenuThumb', '', 'blue')
+call s:Col('PmenuThumb', '', 'base2')
 
 " Command line stuff.
 call s:Col('ErrorMsg', 'red', 'base0')

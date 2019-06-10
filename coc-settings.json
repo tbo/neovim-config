@@ -12,5 +12,16 @@
     "rust-client.channel": "nightly",
     "coc.preferences.formatOnSaveFiletypes": ["css", "Markdown", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript", "javascript", "javascript.jsx", "rust", "json"],
     "eslint.autoFixOnSave": true,
-    "eslint.validate":["css", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript", "javascript", "javascript.jsx", "json"]
+    "eslint.validate":["css", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript", "javascript", "javascript.jsx", "json"],
+    "git.changedSign.text": "│",
+    "git.addedSign.text": "│",
+    "git.removedSign.text": "│",
+    "git.topRemovedSign.text": "│",
+    "git.changeRemovedSign.text": "│",
+    "git.addedSign.hlGroup": "GitGutterAdd",
+    "git.changedSign.hlGroup": "GitGutterChange",
+    "git.removedSign.hlGroup": "GitGutterDelete",
+    "git.topRemovedSign.hlGroup": "GitGutterDelete",
+    "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
+    "git.branchCharacter": ""
 }
