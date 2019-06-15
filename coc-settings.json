@@ -23,5 +23,7 @@
     "git.removedSign.hlGroup": "GitGutterDelete",
     "git.topRemovedSign.hlGroup": "GitGutterDelete",
     "git.changeRemovedSign.hlGroup": "GitGutterChangeDelete",
-    "git.branchCharacter": ""
+    "git.branchCharacter": "",
+    "git.addGlameToBufferVar": true,
+    "typescript.preferences.importModuleSpecifier": "relative"
 }

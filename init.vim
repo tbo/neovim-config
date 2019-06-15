@@ -29,11 +29,11 @@ Plug 'tbo/notion'
 " Syntax & completion
 
 Plug 'editorconfig/editorconfig-vim'
-Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot', {'tag': 'v3.8.1'}
 Plug 'ron-rs/ron.vim'
 Plug 'jparise/vim-graphql' 
-Plug 'styled-components/vim-styled-components', {'branch': 'main'}
-"
+" Plug 'styled-components/vim-styled-components', {'branch': 'main'}
+
 " Helpers
 
 Plug 'simnalamburt/vim-mundo'
@@ -85,7 +85,7 @@ set wildcharm=<C-Z>
 " Disable modelines
 set modelines=0
 set inccommand=nosplit
-set mouse-=a
+set mouse=a
 " Center current line
 set scrolloff=9999
 " Do not wrap lines
@@ -130,9 +130,10 @@ autocmd BufEnter * :syntax sync fromstart
 " autocmd BufWritePost *.rs :silent execute "r !rustfmt %"
 
 " Use ESC to switch to normal mode in terminals except in fzf
-autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
-autocmd TermOpen term://* tmap <buffer> <ESC> <C-\><C-n>
-autocmd TermOpen term://* tnoremap <buffer> <ESC-e> <nop>
+" autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
+" autocmd TermOpen term://* tmap <buffer> <ESC> <C-\><C-n>
+" autocmd TermOpen term://* tnoremap <silent><S-Esc> <C-\><C-n>
+" autocmd TermOpen term://* tnoremap <buffer> <ESC> <nop>
 autocmd User CocQuickfixChange :call fzf_quickfix#run()
 
 nmap <silent> <D-j> <C-W>w
@@ -174,8 +175,7 @@ nmap s :w<CR>
 nnoremap gk <C-i>
 nnoremap gj <C-O>
 
-" Use K for show documentation in preview window
-" nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> gh :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
   if &filetype == 'vim'
@@ -259,7 +259,6 @@ autocmd ColorScheme * hi CocUnderline cterm=undercurl gui=undercurl
 
 colorscheme gotham
 let g:enable_bold_font = 1
-let g:vebugger_use_tags = 1
 set completeopt-=preview
 set completeopt=noinsert,menuone,noselect
 
@@ -273,6 +272,7 @@ autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= concealle
 autocmd BufNewFile,BufRead *.jscad set filetype=javascript
 autocmd! User FzfStatusLine setlocal statusline=\ 
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
+command! -bang -nargs=* Blame call Blame()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')
 command! -bang -nargs=* LC execute "LanguageClientStop"|LanguageClientStart
@@ -330,6 +330,10 @@ endfunction
 function! CleanUpBuffers()
     let l:mruBuffers = s:getFileBuffers()
     exec 'bd! ' . join(l:mruBuffers, ' ')
+endfunction
+
+function! Blame()
+    echo b:coc_git_blame
 endfunction
 
 function! s:getCommonPath(paths)
@@ -411,17 +415,6 @@ endfunction
 
 set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}
 
-" function! FixWindow()
-"     execute "res -1 | res +1"
-" endfunction
-" syntax match jsArrowFunction "=>" conceal cchar=⇒
-" function! SynStack()
-"   if !exists("*synstack")
-"     return
-"   endif
-"   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-" endfunc
-" map gu :call SynStack()<CR>
 " lua << EOF
 " abc = function(g)
 "     vim.api.nvim_command("echo 'hello world'")
