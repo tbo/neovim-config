@@ -74,9 +74,6 @@ set expandtab
 set cursorline
 set ignorecase
 set smartcase
-" Don't create those annoying backup files
-set noswapfile
-set nowritebackup
 " Don't delete hidden buffers
 set hidden
 " Prefix current line with its line number
@@ -134,6 +131,29 @@ let g:coc_auto_copen = 0
 let g:terminal_scrollback_buffer_size = 10000
 let g:startify_change_to_dir = 0
 syntax enable
+
+" Protect changes between writes. Default values of
+" updatecount (200 keystrokes) and updatetime
+" (4 seconds) are fine
+set swapfile
+set directory^=~/.nvim/swap//
+
+" protect against crash-during-write
+set writebackup
+" but do not persist backup after successful write
+set nobackup
+" use rename-and-write-new method whenever safe
+set backupcopy=auto
+" patch required to honor double slash at end
+if has("patch-8.1.0251")
+	" consolidate the writebackups -- not a big
+	" deal either way, since they usually get deleted
+	set backupdir^=~/.nvim/backup//
+end
+
+" persist the undo tree for each file
+set undofile
+set undodir^=~/.nvim/undo//
 
 " Key bindings
 nmap ; :
