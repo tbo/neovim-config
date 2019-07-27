@@ -7,15 +7,12 @@ autocmd!
 autocmd User CocLocationsChange CocList --normal location
 call plug#begin('~/.nvim/plugged')
 
-" Defaults defined by tpope
-
-Plug 'tpope/vim-sensible'
-
-" General Purpose
-
+" " General Purpose
+"
 Plug 'tomtom/tcomment_vim'
 " Plug 'vim-scripts/fugitive.vim'
 Plug 'michaeljsmith/vim-indent-object'
+Plug 'mg979/vim-visual-multi'
 
 " User interface
 
@@ -44,7 +41,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'chriskempson/base16-vim'
 
 " COC
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}, 'branch': 'release'}
 Plug 'neoclide/coc-jest', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
@@ -59,6 +56,13 @@ Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-git', {'do': 'yarn install --frozen-lockfile'}
 call plug#end()
+
+let g:VM_default_mappings           = 0
+let g:VM_maps = {}
+let g:VM_maps["Add Cursor At Pos"]            = '<c-e>'
+let g:VM_maps['Visual Add']                   = '<c-e>'
+let g:VM_maps["Select All"]                   = '<C-h>'
+let g:VM_maps['Visual All']                   = '<C-h>'
 
 " Options
 " Indent defaults
@@ -111,6 +115,16 @@ set shortmess+=c
 set concealcursor=
 set conceallevel=2
 set noautoread
+set formatexpr=
+set fo=acroqwnb
+" Fold settings
+set foldlevel=0
+set foldmethod=syntax
+set foldnestmax=1
+set nofoldenable
+" Netrw settings
+let g:netrw_banner = 0
+let g:netrw_liststyle = 0
 
 let g:matchparen_timeout = 10
 let g:matchparen_insert_timeout = 10
@@ -263,6 +277,7 @@ set completeopt-=preview
 set completeopt=noinsert,menuone,noselect
 
 " Leaving and entering terminal window
+autocmd FileType mail setlocal spell spelllang=en_us,de_de
 autocmd BufLeave term://* stopinsert
 autocmd BufEnter term://* startinsert
 autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
