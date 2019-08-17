@@ -10,7 +10,6 @@ call plug#begin('~/.nvim/plugged')
 " " General Purpose
 "
 Plug 'tomtom/tcomment_vim'
-" Plug 'vim-scripts/fugitive.vim'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'mg979/vim-visual-multi'
 
@@ -29,7 +28,6 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot', {'tag': 'v3.8.1'}
 Plug 'ron-rs/ron.vim'
 Plug 'jparise/vim-graphql' 
-" Plug 'styled-components/vim-styled-components', {'branch': 'main'}
 
 " Helpers
 
@@ -132,6 +130,7 @@ let g:terminal_scrollback_buffer_size = 10000
 let g:startify_change_to_dir = 0
 syntax enable
 
+let g:EditorConfig_max_line_indicator = "exceeding"
 " Protect changes between writes. Default values of
 " updatecount (200 keystrokes) and updatetime
 " (4 seconds) are fine
