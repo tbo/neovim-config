@@ -3,6 +3,7 @@ let g:mruBuffers = get(g:, 'mruBuffers', [])
 let g:fzf_buffers_jump = 1
 let g:coc_enable_locationlist = 0
 let g:python3_host_prog = '/Users/tbo/.pyenv/versions/py3neovim/bin/python'
+let g:polyglot_disabled = ['typescript', 'typescript.tsx', 'typescript.jsx', 'typescriptreact']
 autocmd!
 autocmd User CocLocationsChange CocList --normal location
 call plug#begin('~/.nvim/plugged')
@@ -25,7 +26,8 @@ Plug 'tbo/notion'
 " Syntax & completion
 
 Plug 'editorconfig/editorconfig-vim'
-Plug 'sheerun/vim-polyglot', {'tag': 'v3.8.1'}
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'sheerun/vim-polyglot'
 Plug 'ron-rs/ron.vim'
 Plug 'jparise/vim-graphql' 
 
@@ -110,8 +112,6 @@ set shortmess+=c
 set concealcursor=
 set conceallevel=2
 set noautoread
-set formatexpr=
-set fo=acroqwnb
 " Fold settings
 set foldlevel=0
 set foldmethod=syntax
@@ -305,6 +305,8 @@ autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999 conceallevel=2
 autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(300, 'RedrawStatusline', {'repeat': -1}) " | call FixWindow()
 autocmd BufNewFile,BufRead *.jscad set filetype=javascript
 autocmd! User FzfStatusLine setlocal statusline=\ 
+autocmd FileType * set fo-=c fo-=r fo-=o
+command! -bang -nargs=* ToggleCommentMode call ToggleCommentMode()
 command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* Blame call Blame()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
@@ -447,10 +449,18 @@ function! GitInfo()
     return git != '' ? ' '.git : ''
 endfunction
 
+function! ToggleCommentMode() 
+  let [&fo, b:oldFo] = [get(b:, 'oldFo', 'actroqwnb'), &fo]
+  let [&formatexpr, b:oldFormatExpr] = [get(b:, 'oldFormatExpr', ''), &formatexpr]
+  let [&textwidth, b:oldTextWidth] = [get(b:, 'oldTextWidth', 80), &textwidth]
+  set spell!
+endfunction
+
 set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}
 
 " lua << EOF
-" abc = function(g)
+" function GlobalLuaFunction()
 "     vim.api.nvim_command("echo 'hello world'")
+"     print "nvim-example-lua-plugin.luamodule.init GlobalLuaFunction: hello"
 " end
 " EOF

@@ -1,5 +1,15 @@
 {
     "languageserver": {
+      "clojure-lsp": {
+        "command": "bash",
+        "args": ["-c", "clojure-lsp"],
+        "filetypes": ["clojure"],
+        "rootPatterns": ["project.clj"],
+        "additionalSchemes": ["jar", "zipfile"],
+        "trace.server": "verbose",
+        "initializationOptions": {
+        }
+      }
     },
     "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home",
     "coc.preferences.diagnostic.errorSign": "",
@@ -7,12 +17,13 @@
     "coc.preferences.diagnostic.infoSign": "",
     "coc.preferences.diagnostic.hintSign": "",
     "java.format.onType.enabled": false,
+    "coc.preferences.formatOnType": false,
     "coc.preferences.fixInsertedWord": false,
     "java.errors.incompleteClasspath.severity": "ignore",
     "rust-client.channel": "nightly",
     "coc.preferences.formatOnSaveFiletypes": ["css", "Markdown", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript", "javascript", "javascript.jsx", "rust", "json"],
     "eslint.autoFixOnSave": false,
-    "eslint.filetypes":["css", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript", "javascript", "javascript.jsx", "json"],
+    "eslint.filetypes":["css", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript", "javascript", "javascript.jsx"],
     "git.changedSign.text": "│",
     "git.addedSign.text": "│",
     "git.removedSign.text": "│",
