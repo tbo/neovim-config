@@ -12,7 +12,6 @@ call plug#begin('~/.nvim/plugged')
 "
 Plug 'tomtom/tcomment_vim'
 Plug 'michaeljsmith/vim-indent-object'
-Plug 'mg979/vim-visual-multi'
 
 " User interface
 
@@ -30,6 +29,8 @@ Plug 'HerringtonDarkholme/yats.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'ron-rs/ron.vim'
 Plug 'jparise/vim-graphql' 
+Plug 'guns/vim-sexp',    {'for': 'clojure'}
+Plug 'liquidz/vim-iced', {'for': 'clojure'}
 
 " Helpers
 
@@ -56,13 +57,6 @@ Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-git', {'do': 'yarn install --frozen-lockfile'}
 call plug#end()
-
-let g:VM_default_mappings           = 0
-let g:VM_maps = {}
-let g:VM_maps["Add Cursor At Pos"]            = '<c-e>'
-let g:VM_maps['Visual Add']                   = '<c-e>'
-let g:VM_maps["Select All"]                   = '<C-h>'
-let g:VM_maps['Visual All']                   = '<C-h>'
 
 " Options
 " Indent defaults
@@ -162,11 +156,6 @@ map f :MyBuffers<CR>
 autocmd BufEnter * :syntax sync fromstart
 " autocmd BufWritePost *.rs :silent execute "r !rustfmt %"
 
-" Use ESC to switch to normal mode in terminals except in fzf
-" autocmd FileType fzf tnoremap <buffer> <ESC> <C-g>
-" autocmd TermOpen term://* tmap <buffer> <ESC> <C-\><C-n>
-" autocmd TermOpen term://* tnoremap <silent><S-Esc> <C-\><C-n>
-" autocmd TermOpen term://* tnoremap <buffer> <ESC> <nop>
 autocmd User CocQuickfixChange :call fzf_quickfix#run()
 
 nmap <silent> <D-j> <C-W>w
@@ -274,9 +263,7 @@ set fillchars+=vert:│,eob:\
 
 nmap <silent> c :NotionJump<CR>
 
-if (has("termguicolors") || has("vimr"))
- set termguicolors
-endif
+set termguicolors
 
 augroup inactive_win
     au!
@@ -424,7 +411,6 @@ function! OpenBufferSelection()
     call fzf#run({'source': buffers, 'sink': function('s:bufopen'), 'down': len(buffers)+3})
 endfunction
 
-" Statusline
 function! FilenameOrTerm()
     return exists('b:term_title') ? get(split(b:term_title, ','), 0, 'unknown') : expand('%:p:h:t') . '/' . expand('%:t')
 endfunction
