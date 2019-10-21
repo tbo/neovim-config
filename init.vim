@@ -25,11 +25,14 @@ Plug 'tbo/notion'
 " Syntax & completion
 
 Plug 'editorconfig/editorconfig-vim'
-Plug 'HerringtonDarkholme/yats.vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
 Plug 'sheerun/vim-polyglot'
 Plug 'ron-rs/ron.vim'
 Plug 'jparise/vim-graphql' 
-Plug 'guns/vim-sexp',    {'for': 'clojure'}
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': 'clojure'}
+Plug 'guns/vim-sexp', {'for': 'clojure'}
 Plug 'liquidz/vim-iced', {'for': 'clojure'}
 
 " Helpers
@@ -151,6 +154,7 @@ set undodir^=~/.nvim/undo//
 " Key bindings
 nmap ; :
 map f :MyBuffers<CR>
+nmap gv <Plug>(iced_eval)<Plug>(sexp_inner_element)``
 
 " Avoids syntax issues
 autocmd BufEnter * :syntax sync fromstart
@@ -210,6 +214,7 @@ endfunction
 nmap U :join<CR>
 nmap J <C-D>
 nmap K <C-U>
+nmap S :IcedRequire<CR>
 
 " Use `[c` and `]c` for navigate diagnostics
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
@@ -261,7 +266,7 @@ nmap <silent> <Esc> :noh<CR>
 
 set fillchars+=vert:│,eob:\ 
 
-nmap <silent> c :NotionJump<CR>
+nmap <silent> F :NotionJump<CR>
 
 set termguicolors
 
