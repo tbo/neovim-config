@@ -153,7 +153,7 @@ set undodir^=~/.nvim/undo//
 
 " Key bindings
 nmap ; :
-map f :MyBuffers<CR>
+map <silent> f :MyBuffers<CR>
 nmap gv <Plug>(iced_eval)<Plug>(sexp_inner_element)``
 
 " Avoids syntax issues
@@ -264,7 +264,7 @@ command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
 nmap gu :CocCommand git.chunkUndo<CR>
 nmap <silent> <Esc> :noh<CR>
 
-set fillchars+=vert:│,eob:\ 
+set fillchars+=vert:\ ,eob:\ 
 
 nmap <silent> F :NotionJump<CR>
 
@@ -413,7 +413,7 @@ function! OpenBufferSelection()
     let common = s:getCommonPath(files)
     let commonLength = strlen(common) > 0 ? strlen(common) + 2 : 0
     let buffers = map(files, 'strpart(v:val, commonLength)') + terminals
-    call fzf#run({'source': buffers, 'sink': function('s:bufopen'), 'down': len(buffers)+3})
+    call fzf#run({'window': 'call FloatingFZF()', 'source': buffers, 'sink': function('s:bufopen'), 'down': len(buffers)+3})
 endfunction
 
 function! FilenameOrTerm()
@@ -445,6 +445,27 @@ function! ToggleCommentMode()
   let [&formatexpr, b:oldFormatExpr] = [get(b:, 'oldFormatExpr', ''), &formatexpr]
   let [&textwidth, b:oldTextWidth] = [get(b:, 'oldTextWidth', 80), &textwidth]
   set spell!
+endfunction
+
+function! FloatingFZF()
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+
+  let height = float2nr(15)
+  let width = float2nr(120)
+  let horizontal = float2nr((&columns - width) / 2)
+  let vertical = 1
+
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': vertical,
+        \ 'col': horizontal,
+        \ 'width': width,
+        \ 'height': height,
+        \ 'style': 'minimal'
+        \ }
+
+  call nvim_open_win(buf, v:true, opts)
 endfunction
 
 set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}

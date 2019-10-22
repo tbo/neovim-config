@@ -87,6 +87,7 @@ let s:colors.violet  = { 'gui': '#4e5166', 'cterm': 5  }
 let s:colors.blue    = { 'gui': '#195466', 'cterm': 4  }
 let s:colors.cyan    = { 'gui': '#33859E', 'cterm': 6  }
 let s:colors.green   = { 'gui': '#2aa889', 'cterm': 2  }
+let s:colors.darkgrey= { 'gui': '#0f0f0f', 'cterm': 0  }
 
 " Neovim :terminal colors.
 let g:terminal_color_0  = get(s:colors.base0, 'gui')
@@ -110,14 +111,14 @@ let g:terminal_color_15 = g:terminal_color_7
 " Native highlighting ==========================================================
 
 let s:background = 'base0'
-let s:linenr_background = 'base1'
+let s:linenr_background = 'darkgrey'
 
 " Everything starts here.
 call s:Col('Normal', 'base6', 'base0')
 
 " Line, cursor and so on.
 call s:Col('Cursor', 'base1', 'base6')
-call s:Col('CursorLine', '', 'base1')
+call s:Col('CursorLine', '', s:linenr_background)
 call s:Col('CursorColumn', '', 'base1')
 
 " Sign column, line numbers.
@@ -236,10 +237,6 @@ call s:Col('rubyStringDelimiter', 'green')
 call s:Col('htmlArg', 'blue')
 call s:Col('htmlItalic', 'magenta')
 call s:Col('htmlBold', 'cyan', '')
-
-" Python                                                                                                                   
-call s:Col('pythonStatement', 'blue')
-
 
 " Plugin =======================================================================
 
