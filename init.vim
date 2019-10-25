@@ -4,6 +4,8 @@ let g:fzf_buffers_jump = 1
 let g:coc_enable_locationlist = 0
 let g:python3_host_prog = '/Users/tbo/.pyenv/versions/py3neovim/bin/python'
 let g:polyglot_disabled = ['typescript', 'typescript.tsx', 'typescript.jsx', 'typescriptreact']
+let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+
 autocmd!
 autocmd User CocLocationsChange CocList --normal location
 call plug#begin('~/.nvim/plugged')
@@ -264,6 +266,7 @@ command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
 nmap gu :CocCommand git.chunkUndo<CR>
 nmap <silent> <Esc> :noh<CR>
 
+" set fillchars+=vert:▐,eob:\ 
 set fillchars+=vert:\ ,eob:\ 
 
 nmap <silent> F :NotionJump<CR>
@@ -303,7 +306,6 @@ command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* Blame call Blame()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')
-command! -bang -nargs=* LC execute "LanguageClientStop"|LanguageClientStart
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.rb''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
 
 function! s:getMruBuffers()
