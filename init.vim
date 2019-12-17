@@ -23,6 +23,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'tbo/notion'
+" Plug 'wellle/context.vim'
 
 " Syntax & completion
 
@@ -130,11 +131,8 @@ let g:startify_change_to_dir = 0
 syntax enable
 
 let g:EditorConfig_max_line_indicator = "exceeding"
-" Protect changes between writes. Default values of
-" updatecount (200 keystrokes) and updatetime
-" (4 seconds) are fine
-set swapfile
-set directory^=~/.nvim/swap//
+set noswapfile
+set directory^=~/.nvim/swap/
 
 " protect against crash-during-write
 set writebackup

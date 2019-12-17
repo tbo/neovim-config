@@ -21,9 +21,9 @@
     "coc.preferences.fixInsertedWord": false,
     "java.errors.incompleteClasspath.severity": "ignore",
     "rust-client.channel": "nightly",
-    "coc.preferences.formatOnSaveFiletypes": ["css", "Markdown", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript", "javascript", "javascript.jsx", "rust", "json", "clojure"],
+    "coc.preferences.formatOnSaveFiletypes": ["css", "Markdown", "typescriptreact", "javascriptreact", "typescript.tsx", "typescript.jsx", "typescript", "javascript", "javascript.jsx", "rust", "json", "clojure"],
     "eslint.autoFixOnSave": false,
-    "eslint.filetypes":["css", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript", "javascript", "javascript.jsx"],
+    "eslint.filetypes":["css", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript.tsx", "typescript", "javascript", "javascript.jsx"],
     "git.changedSign.text": "│",
     "git.addedSign.text": "│",
     "git.removedSign.text": "│",
@@ -37,5 +37,6 @@
     "git.branchCharacter": "",
     "git.addGBlameToBufferVar": true,
     "typescript.preferences.importModuleSpecifier": "relative",
-    "prettier.proseWrap": "always"
+    "prettier.proseWrap": "always",
+    "coc.preferences.colorSupport": false
 }
