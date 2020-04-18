@@ -38,6 +38,8 @@
   "typescript.preferences.importModuleSpecifier": "relative",
   "prettier.proseWrap": "always",
   "coc.preferences.colorSupport": false,
-  "coc.preferences.maxFileSize":"1MB",
-  "coc.preferences.snippets.enable": false
+  "coc.preferences.maxFileSize": "1MB",
+  "coc.preferences.snippets.enable": false,
+  "typescript.suggest.completeFunctionCalls": false,
+  "javascript.suggest.completeFunctionCalls": false,
 }

@@ -152,7 +152,6 @@ nmap gv <Plug>(iced_eval)<Plug>(sexp_inner_element)``
 
 " Avoids syntax issues
 autocmd BufEnter * :syntax sync fromstart
-" autocmd BufWritePost *.rs :silent execute "r !rustfmt %"
 
 autocmd User CocQuickfixChange :call fzf_quickfix#run()
 
@@ -279,8 +278,8 @@ autocmd ColorScheme * hi CocUnderline cterm=undercurl gui=undercurl
 
 colorscheme gotham
 let g:enable_bold_font = 1
-set completeopt-=preview
-set completeopt=noinsert,menuone,noselect
+" set completeopt-=preview
+" set completeopt=noinsert,menuone,noselect
 
 " Leaving and entering terminal window
 autocmd FileType mail setlocal spell spelllang=en_us,de_de
@@ -338,7 +337,11 @@ function! DeleteWindow()
     let currentBuffer = expand('%:p')
     let l:mruBuffers = s:getMruBuffers()
     let l:mruFileBuffers = s:getMruFileBuffers()
-    if IsTerminalBuffer(currentBuffer) || getbufvar(currentBuffer, '&buftype') == 'nofile' || len(s:getFileWindows()) > 1
+    if exists('b:termedit')
+      update
+      call rpcnotify(b:termedit, 'release')
+      return
+    elseif IsTerminalBuffer(currentBuffer) || getbufvar(currentBuffer, '&buftype') == 'nofile' || len(s:getFileWindows()) > 1
         exec DWM_Close()
     elseif len(l:mruFileBuffers) > 1
         exec 'buffer '. l:mruFileBuffers[1]
@@ -355,7 +358,7 @@ function! CleanUpBuffers()
 endfunction
 
 function! Blame()
-    echo b:coc_git_blame
+    echo get(b:, 'coc_git_blame', 'Not in a git repository')
 endfunction
 
 function! s:getCommonPath(paths)
