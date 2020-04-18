@@ -3,7 +3,6 @@ let g:mruBuffers = get(g:, 'mruBuffers', [])
 let g:fzf_buffers_jump = 1
 let g:coc_enable_locationlist = 0
 let g:python3_host_prog = '/Users/tbo/.pyenv/versions/py3neovim/bin/python'
-let g:polyglot_disabled = ['typescript', 'typescript.tsx', 'typescript.jsx', 'typescriptreact']
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 
 autocmd!
@@ -23,16 +22,11 @@ Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'tbo/notion'
-" Plug 'wellle/context.vim'
 
 " Syntax & completion
 
 Plug 'editorconfig/editorconfig-vim'
-Plug 'leafgarland/typescript-vim'
-Plug 'peitalin/vim-jsx-typescript'
 Plug 'sheerun/vim-polyglot'
-Plug 'ron-rs/ron.vim'
-Plug 'jparise/vim-graphql' 
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': 'clojure'}
 Plug 'guns/vim-sexp', {'for': 'clojure'}
@@ -50,13 +44,13 @@ Plug 'chriskempson/base16-vim'
 " COC
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}, 'branch': 'release'}
 Plug 'neoclide/coc-jest', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
+" Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-rls', {'do': 'yarn install --frozen-lockfile'}
+Plug 'fannheyward/coc-rust-analyzer', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
@@ -304,7 +298,7 @@ command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* Blame call Blame()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')
-command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.rb''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.sh''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
 
 function! s:getMruBuffers()
     return filter(g:mruBuffers, 'bufexists(v:val)&&buflisted(bufnr(v:val))')
@@ -452,7 +446,7 @@ function! FloatingFZF()
   call setbufvar(buf, '&signcolumn', 'no')
 
   let height = float2nr(15)
-  let width = float2nr(120)
+  let width = float2nr(140)
   let horizontal = float2nr((&columns - width) / 2)
   let vertical = 1
 
