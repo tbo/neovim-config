@@ -5,12 +5,13 @@ let g:coc_enable_locationlist = 0
 let g:python3_host_prog = '/Users/tbo/.pyenv/versions/py3neovim/bin/python'
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 
+
 autocmd!
 autocmd User CocLocationsChange CocList --normal location
 call plug#begin('~/.nvim/plugged')
 
-" " General Purpose
-"
+" General Purpose
+
 Plug 'tomtom/tcomment_vim'
 Plug 'michaeljsmith/vim-indent-object'
 
@@ -42,7 +43,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'chriskempson/base16-vim'
 
 " COC
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}, 'branch': 'release'}
+Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 Plug 'neoclide/coc-jest', {'do': 'yarn install --frozen-lockfile'}
 " Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
@@ -134,12 +135,10 @@ set writebackup
 set nobackup
 " use rename-and-write-new method whenever safe
 set backupcopy=auto
-" patch required to honor double slash at end
-if has("patch-8.1.0251")
-	" consolidate the writebackups -- not a big
-	" deal either way, since they usually get deleted
-	set backupdir^=~/.nvim/backup//
-end
+
+" consolidate the writebackups -- not a big
+" deal either way, since they usually get deleted
+set backupdir^=~/.nvim/backup//
 
 " persist the undo tree for each file
 set undofile
@@ -147,7 +146,7 @@ set undodir^=~/.nvim/undo//
 
 " Key bindings
 nmap ; :
-map <silent> f :MyBuffers<CR>
+map <silent> F :MyBuffers<CR>
 nmap gv <Plug>(iced_eval)<Plug>(sexp_inner_element)``
 
 " Avoids syntax issues
@@ -157,11 +156,13 @@ autocmd User CocQuickfixChange :call fzf_quickfix#run()
 
 nmap <silent> <D-j> <C-W>w
 nmap <silent> <F2> <C-W>w
+imap <silent> <F2> <ESC><C-W>w
 tmap <silent> <D-j> <C-\><C-n><C-W>w
 tmap <silent> <F2> <C-\><C-n><C-W>w
 
 nmap <silent> <D-k> <C-W>W
 nmap <silent> <F3> <C-W>W
+imap <silent> <F3> <ESC><C-W>W
 tmap <silent> <D-k> <C-\><C-n><C-W>W
 tmap <silent> <F3> <C-\><C-n><C-W>W
 
@@ -191,10 +192,12 @@ tmap <silent> <F9> <C-\><C-n>:call DWM_New()<CR>
 
 map <Space> :GFiles<CR>
 nmap s :w<CR>
-nnoremap gk <C-i>
-nnoremap gj <C-O>
+nnoremap K <C-i>
+nnoremap J <C-O>
 
 nnoremap <silent> gh :call <SID>show_documentation()<CR>
+
+map <silent> <M-g> :GFiles<CR>
 
 function! s:show_documentation()
   if &filetype == 'vim'
@@ -205,8 +208,6 @@ function! s:show_documentation()
 endfunction
 
 nmap U :join<CR>
-nmap J <C-D>
-nmap K <C-U>
 nmap S :IcedRequire<CR>
 
 " Use `[c` and `]c` for navigate diagnostics
@@ -257,10 +258,9 @@ command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
 nmap gu :CocCommand git.chunkUndo<CR>
 nmap <silent> <Esc> :noh<CR>
 
-" set fillchars+=vert:▐,eob:\ 
 set fillchars+=vert:\ ,eob:\ 
 
-nmap <silent> F :NotionJump<CR>
+nmap <silent> f :NotionJump<CR>
 
 set termguicolors
 
@@ -288,7 +288,7 @@ autocmd BufEnter term://* startinsert
 autocmd WinEnter,BufAdd,BufEnter,BufDelete,TermOpen,WinLeave * :call AddBuffer()
 autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
 autocmd BufWinEnter,WinEnter * setlocal scrolloff=999999 conceallevel=2
-autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(300, 'RedrawStatusline', {'repeat': -1}) " | call FixWindow()
+autocmd TermOpen,BufWinEnter,WinEnter term://* setlocal concealcursor= conceallevel=0 nonumber norelativenumber signcolumn=no scrolloff=0 scrollback=100000 | startinsert | call timer_start(300, 'RedrawStatusline', {'repeat': -1})
 autocmd BufNewFile,BufRead *.jscad set filetype=javascript
 autocmd! User FzfStatusLine setlocal statusline=\ 
 autocmd FileType * set fo-=c fo-=r fo-=o
@@ -297,6 +297,7 @@ command! -bang -nargs=* CleanUpBuffers call CleanUpBuffers()
 command! -bang -nargs=* Blame call Blame()
 command! -bang -nargs=* MyBuffers call OpenBufferSelection()
 command! -bang -nargs=* Bl echo expand('%:p:h')
+command! -bang -nargs=* Bc silent execute '!echo "`'. strpart(expand('%:p'), len(getcwd())) .'`" | pbcopy'
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.sh''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
 
 function! s:getMruBuffers()
@@ -382,12 +383,14 @@ function! s:getCommonPath(paths)
 endfunction
 
 function! AddBuffer()
+  if !get(g:, 'isQuickNavigationActive', 0)
     let currentBuffer = expand('%:p')
 
     let g:mruBuffers = filter(g:mruBuffers, 'currentBuffer!=v:val&&bufexists(v:val)&&buflisted(bufnr(v:val))')
     if strlen(currentBuffer) > 0 && bufexists(currentBuffer)
         let g:mruBuffers = [currentBuffer] + g:mruBuffers
     endif
+  endif
 endfunction
 
 function! s:bufopen(e)
@@ -467,6 +470,42 @@ endfunction
 
 set statusline=\ %{WebDevIconsGetFileTypeSymbol()}\ %{FilenameOrTerm()}\ %=%{GitInfo()}
 
+let g:isQuickNavigationActive = 0 
+let g:tempBufferSelection = [] 
+let g:tempBufferIndex = 0 
+
+function! InitTempBufferList()
+  if !get(g:, 'isQuickNavigationActive', 0)
+    let g:tempBufferSelection = map(s:getMruFileBuffers(), 'buffer_number(v:val)')
+    let g:isQuickNavigationActive = 1
+    let g:tempBufferIndex = 0 
+  endif 
+endfunction
+
+function GoToNextNavItem()
+  call InitTempBufferList()
+  if g:tempBufferIndex + 1 < len(g:tempBufferSelection)
+    let g:tempBufferIndex += 1 
+  endif
+  exec 'buffer '. g:tempBufferSelection[g:tempBufferIndex]
+endfunction
+
+function GoToPreviousNavItem()
+  call InitTempBufferList()
+  if g:tempBufferIndex > 0 
+    let g:tempBufferIndex -= 1 
+  endif
+  exec 'buffer '. g:tempBufferSelection[g:tempBufferIndex]
+endfunction
+
+function! LeaveNavigation()
+  let g:isQuickNavigationActive = 0
+  call AddBuffer()
+endfunction
+
+nmap <silent> <F18> :call LeaveNavigation()<CR>
+nmap <silent> <F19> :call GoToNextNavItem()<CR>
+nmap <silent> <F20> :call GoToPreviousNavItem()<CR>
 " lua << EOF
 " function GlobalLuaFunction()
 "     vim.api.nvim_command("echo 'hello world'")
