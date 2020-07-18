@@ -7,8 +7,7 @@
       "rootPatterns": ["project.clj"],
       "additionalSchemes": ["jar", "zipfile"],
       "trace.server": "verbose",
-      "initializationOptions": {
-      }
+      "initializationOptions": {}
     }
   },
   "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home",
@@ -20,9 +19,32 @@
   "coc.preferences.formatOnType": false,
   "java.errors.incompleteClasspath.severity": "ignore",
   "rust-client.channel": "nightly",
-  "coc.preferences.formatOnSaveFiletypes": ["css", "Markdown", "typescriptreact", "javascriptreact", "typescript.tsx", "typescript.jsx", "typescript", "javascript", "javascript.jsx", "rust", "json", "clojure", "html", "html.handlebars"],
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "Markdown",
+    "typescriptreact",
+    "javascriptreact",
+    "typescript.tsx",
+    "typescript.jsx",
+    "typescript",
+    "javascript",
+    "javascript.jsx",
+    "rust",
+    "json",
+    "clojure",
+    "html",
+    "html.handlebars"
+  ],
   "eslint.autoFixOnSave": false,
-  "eslint.filetypes":["css", "typescriptreact", "javascriptreact", "typescript.jsx", "typescript.tsx", "typescript", "javascript", "javascript.jsx"],
+  "eslint.filetypes": [
+    "typescriptreact",
+    "javascriptreact",
+    "typescript.jsx",
+    "typescript.tsx",
+    "typescript",
+    "javascript",
+    "javascript.jsx"
+  ],
   "git.changedSign.text": "│",
   "git.addedSign.text": "│",
   "git.removedSign.text": "│",
@@ -42,4 +64,5 @@
   "coc.preferences.snippets.enable": false,
   "typescript.suggest.completeFunctionCalls": false,
   "javascript.suggest.completeFunctionCalls": false,
+  "suggest.enablePreselect": true
 }

@@ -27,6 +27,7 @@ Plug 'tbo/notion'
 " Syntax & completion
 
 Plug 'editorconfig/editorconfig-vim'
+Plug 'jonsmithers/vim-html-template-literals'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': 'clojure'}
@@ -40,19 +41,14 @@ Plug 'PeterRincker/vim-argumentative'
 
 " Color Themes
 Plug 'ryanoasis/vim-devicons'
-Plug 'chriskempson/base16-vim'
 
 " COC
 Plug 'neoclide/coc.nvim', { 'branch': 'release'}
-Plug 'neoclide/coc-jest', {'do': 'yarn install --frozen-lockfile'}
-" Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
 Plug 'fannheyward/coc-rust-analyzer', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
@@ -300,6 +296,11 @@ command! -bang -nargs=* Bl echo expand('%:p:h')
 command! -bang -nargs=* Bc silent execute '!echo "`'. strpart(expand('%:p'), len(getcwd())) .'`" | pbcopy'
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4.. --preview-window up:40% --preview "''/Users/tbo/.nvim/plugged/fzf.vim/bin/preview.sh''"\ \{\}', 'dir': systemlist('git rev-parse --show-toplevel')[0], 'down': '50%'}, <bang>0)
 
+augroup LuaHighlight
+  autocmd!
+  autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank()
+augroup END
+
 function! s:getMruBuffers()
     return filter(g:mruBuffers, 'bufexists(v:val)&&buflisted(bufnr(v:val))')
 endfunction
@@ -506,6 +507,17 @@ endfunction
 nmap <silent> <F18> :call LeaveNavigation()<CR>
 nmap <silent> <F19> :call GoToNextNavItem()<CR>
 nmap <silent> <F20> :call GoToPreviousNavItem()<CR>
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 " lua << EOF
 " function GlobalLuaFunction()
 "     vim.api.nvim_command("echo 'hello world'")
