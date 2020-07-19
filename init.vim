@@ -14,6 +14,7 @@ call plug#begin('~/.nvim/plugged')
 
 Plug 'tomtom/tcomment_vim'
 Plug 'michaeljsmith/vim-indent-object'
+Plug 'romgrk/replace.vim'
 
 " User interface
 
@@ -144,11 +145,14 @@ set undodir^=~/.nvim/undo//
 nmap ; :
 map <silent> F :MyBuffers<CR>
 nmap gv <Plug>(iced_eval)<Plug>(sexp_inner_element)``
+nmap c <Plug>ReplaceOperator
+vmap c <Plug>ReplaceOperator
 
 " Avoids syntax issues
 autocmd BufEnter * :syntax sync fromstart
 
 autocmd User CocQuickfixChange :call fzf_quickfix#run()
+nmap q <Nop>
 
 nmap <silent> <D-j> <C-W>w
 nmap <silent> <F2> <C-W>w
