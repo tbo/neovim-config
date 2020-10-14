@@ -8,6 +8,10 @@
       "additionalSchemes": ["jar", "zipfile"],
       "trace.server": "verbose",
       "initializationOptions": {}
+    },
+    "kotlin": {
+      "command": "~/.config/nvim/lsp/kotlin/bin/kotlin-language-server",
+      "filetypes": ["kotlin"]
     }
   },
   "java.home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home",

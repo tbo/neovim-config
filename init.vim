@@ -18,7 +18,7 @@ Plug 'romgrk/replace.vim'
 
 " User interface
 
-Plug 'spolu/dwm.vim'
+Plug 'tbo/dwm.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
@@ -45,15 +45,15 @@ Plug 'ryanoasis/vim-devicons'
 
 " COC
 Plug 'neoclide/coc.nvim', { 'branch': 'release'}
-Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
-Plug 'fannheyward/coc-rust-analyzer', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-git', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-prettier'
+Plug 'neoclide/coc-css'
+Plug 'neoclide/coc-html'
+Plug 'neoclide/coc-java'
+Plug 'fannheyward/coc-rust-analyzer'
+Plug 'neoclide/coc-tsserver'
+Plug 'neoclide/coc-json'
+Plug 'neoclide/coc-eslint'
+Plug 'neoclide/coc-git'
 call plug#end()
 
 " Options
@@ -208,7 +208,7 @@ function! s:show_documentation()
 endfunction
 
 nmap U :join<CR>
-nmap S :IcedRequire<CR>
+nmap S :IcedRequire<CR>:IcedEval (write-models)<CR>
 
 " Use `[c` and `]c` for navigate diagnostics
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
